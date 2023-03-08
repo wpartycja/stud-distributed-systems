@@ -5,11 +5,11 @@ typedef struct {
     char value1[MAX_STRING_LEN];
     int value2;
     double value3;
-} Tuple;
+} tuple;
 
 typedef struct {
     long mtype;
-    Tuple tuple;
-} Message;
+    tuple tuple;
+} message;
 
 int server_queue, client_queue;
