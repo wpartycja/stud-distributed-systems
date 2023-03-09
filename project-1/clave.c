@@ -23,7 +23,8 @@ int init(void) {
     server_queue = mq_open("/SERVER", O_WRONLY); 
 
     // fill request
-    req.operation_id = 0; strcpy(req.queue_name, queue_name); 
+    req.operation_id = 0;
+    strcpy(req.queue_name, queue_name); 
     mq_send(server_queue, (const char *) &req, sizeof(req), 0);
     mq_receive(client_queue, (char*) &res, sizeof(res), 0);
     

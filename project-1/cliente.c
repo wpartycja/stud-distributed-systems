@@ -2,9 +2,8 @@
 #include <stdio.h>
 
 int main(){
-    int respuesta;
-    respuesta = init();
-    printf(respuesta);
+    int request;
+    request = init();
+    printf("%d\n", request);
     return 0;
-
     }

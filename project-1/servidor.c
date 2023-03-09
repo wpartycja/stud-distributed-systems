@@ -12,7 +12,7 @@ pthread_cond_t cond_message;
 int message_not_copied = true;          
 
 
-void deal_with_message(void *mess){
+void deal_with_message(struct request *mess){
     struct request message; 
     mqd_t client_queue;
     //int result; // operation result
@@ -26,9 +26,20 @@ void deal_with_message(void *mess){
 
     // // deal with client request and make a response
     struct response server_response;
-    // if (message.operation_id == 0) //if mensaje.op == 0 para cada id de cada función
-    //     server_response.result = init(); //respuesta_servidor.respuesta = ejecutar la función correspondiente
-    
+
+    printf("%d\n", server_response.result);
+
+    switch(message.operation_id)
+    {
+        case 0:
+            server_response.result = init();
+            break;
+
+        default:
+            break;
+
+    }
+
     // else if (message.operation_id == 1)
     //     server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
 
@@ -50,6 +61,7 @@ void deal_with_message(void *mess){
     /* Se devuelve el resultado al cliente */
     /* Para ello se envía el resultado a su cola */ 
     printf("%s\n", message.queue_name);
+    printf("%d\n", server_response.result);
     client_queue = mq_open(message.queue_name, O_WRONLY); //q_name - name of the queue, O_WRONLY - queue for sending
 
     if (client_queue == -1)
