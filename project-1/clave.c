@@ -1,4 +1,6 @@
-#include "mensajes.h" 
+#include "mensajes.h"
+#include <string.h>
+#include <unistd.h>
 #include <mqueue.h>
 #include <pthread.h> 
 #include <stdio.h>
