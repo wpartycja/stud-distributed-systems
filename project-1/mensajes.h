@@ -2,15 +2,15 @@
 #define _MENSAJES_H 
 
 #define MAXSIZE 256
-struct respuesta {
-    int resultado; 
+struct response {
+    int result; 
     char value1[MAXSIZE];
     int value2;
     double value3;
 };
-struct peticion {
-    int codigo_ope;
-    char q_name[MAXSIZE]; 
+struct request {
+    int operation_id;
+    char queue_name[MAXSIZE]; 
     int key;
     char value1[MAXSIZE];
     int value2; //se puede utilizar como key2

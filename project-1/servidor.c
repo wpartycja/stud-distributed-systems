@@ -7,89 +7,96 @@
 #include "mensajes.h"
 
 /* mutex y variables condicionales para proteger la copia del mensaje*/ 
-pthread_mutex_t mutex_mensaje;
-int mensaje_no_copiado = true;          
-pthread_cond_t cond_mensaje;
+pthread_mutex_t mutex_message;
+pthread_cond_t cond_message;
+int message_not_copied = true;          
 
-void tratar_mensaje(void *mess){
-    struct peticion mensaje; /* mensaje local */
-    mqd_t q_cliente; /* cola del cliente */
-    int resultado; /* resultado de la operación */
-    mensaje = (*(struct peticion *) mess);
-    /* el thread copia el mensaje a un mensaje local */ 
-    pthread_mutex_lock(&mutex_mensaje);
-    /* ya se puede despertar al servidor*/ 
-    mensaje_no_copiado = false;
-    pthread_cond_signal(&cond_mensaje); 
-    pthread_mutex_unlock(&mutex_mensaje);
+
+void deal_with_message(void *mess){
+    struct request message; 
+    mqd_t client_queue;
+    int result; // operation result
+
+    // copy message to local variable 
+    pthread_mutex_lock(&mutex_message);
+    message = (*(struct request *) mess);
+    message_not_copied = false;
+    pthread_cond_signal(&cond_message); 
+    pthread_mutex_unlock(&mutex_message);
 
     /* ejecutar la petición del cliente y preparar respuesta */ 
-    struct respuesta respuesta_servidor;
-    if (mensaje.codigo_ope == 0) //if mensaje.op == 0 para cada id de cada función
-        respuesta_servidor.respuesta = init(); //respuesta_servidor.respuesta = ejecutar la función correspondiente
+    // // deal with client request and make a response
+    struct response server_response;
+    // if (message.operation_id == 0) //if mensaje.op == 0 para cada id de cada función
+    //     server_response.result = init(); //respuesta_servidor.respuesta = ejecutar la función correspondiente
     
-   /*  else if (mensaje.codigo_ope == 1)
-        respuesta_servidor.respuesta = set_value(mensaje.key, mensaje.value1, mensaje.value2, mensaje.value3)
+    // else if (message.operation_id == 1)
+    //     server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
 
-    else if (mensaje.codigo_ope == 2)
-        respuesta_servidor.respuesta = get_value(mensaje.key, mensaje.value1, mensaje.value2, mensaje.value3)
+    // else if (message.operation_id == 2)
+    //     server_response.result = get_value(message.key, message.value1, message.value2, message.value3);
     
-    else if (mensaje.codigo_ope == 3)
-        respuesta_servidor.respuesta = modify_value(mensaje.key, mensaje.value1, mensaje.value2, mensaje.value3)
+    // else if (message.operation_id == 3)
+    //     server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
 
-    else if (mensaje.codigo_ope == 4)
-        respuesta_servidor.respuesta = delete(mensaje.key)
+    // else if (message.operation_id == 4)
+    //     server_response.result = delete(message.key);
     
-    else if (mensaje.codigo_ope == 5)
-        respuesta_servidor.respuesta = exist(mensaje.key)
+    // else if (message.operation_id == 5)
+    //     server_response.result = exist(message.key);
     
-    else if (mensaje.codigo_ope == 6)
-        respuesta_servidor.respuesta = copy_key(mensaje.key, mensaje.value2) */
+    // else if (message.operation_id == 6)
+    //     server_response.result = copy_key(message.key, message.value2);
         
     /* Se devuelve el resultado al cliente */
     /* Para ello se envía el resultado a su cola */ 
-    printf("%s\n", mensaje.q_name);
-    q_cliente = mq_open(mensaje.q_name, O_WRONLY); //q_name nombre de la cola
-    if (q_cliente == -1)
-        perror(“No se puede abrir la cola del cliente”); 
+    printf("%s\n", message.queue_name);
+    client_queue = mq_open(message.queue_name, O_WRONLY); //q_name - name of the queue, O_WRONLY - queue for sending
+
+    if (client_queue == -1)
+        perror("Error in opening client queue"); 
     else {
-        mq_send(q_cliente, (const char *) &respuesta_servidor, sizeof(respuesta_servidor), 0);
-        mq_close(q_cliente); }
+        mq_send(client_queue, (const char *) &server_response, sizeof(server_response), 0);
+        mq_close(client_queue); }
+
     pthread_exit(0); 
 }
 
 int main(void) {
-    mqd_t q_servidor; 
-    struct peticion mess; /* cola del servidor */
-    struct mq_attr q_attr; /* mensaje a recibir */
-    pthread_attr_t t_attr; /* atributos de la cola */
-    pthread_t thid; /* atributos de los threads */
+    mqd_t server_queue; 
+    struct request mess; // message to receive
+    struct mq_attr queue_attr; // queue attributes
+    pthread_attr_t thread_attr; // threads attributes
+    pthread_t thid; 
     
-    q_attr.mq_maxmsg = 10;
-    q_attr.mq_msgsize = sizeof(struct peticion);
-    q_servidor = mq_open("/SERVIDOR", O_CREAT|O_RDONLY, 0700, &q_attr); 
-    if (q_servidor == -1) {
-        perror(”No se puede crear la cola de servidor”);
+    queue_attr.mq_maxmsg = 10; // maximum number of messages
+    queue_attr.mq_msgsize = sizeof(struct request); // maximum size
+    server_queue = mq_open("/SERVER", O_CREAT|O_RDONLY, 0700, &queue_attr); // create queue for receive messages
+    if (server_queue == -1) {
+        perror("Error in creating server queue");
         return 1; 
     }
-    pthread_mutex_init(&mutex_mensaje, NULL); 
-    pthread_cond_init(&cond_mensaje, NULL); 
-    pthread_attr_init(&t_attr);
-    /* atributos de los threads, threads independientes */ 
-    pthread_attr_setdetachstate(&t_attr, PTHREAD_CREATE_DETACHED);
+
+    pthread_mutex_init(&mutex_message, NULL); 
+    pthread_cond_init(&cond_message, NULL); 
+    pthread_attr_init(&thread_attr);
+
+    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED); // independent threads
 
     while (true) {
-        mq_receive(q_servidor, (char *) &mess, sizeof(struct peticion), 0);
-        if (pthread_create(&thid, &t_attr, tratar_mensaje, (void *)&mess)== 0) {
-            /* se espera a que el thread copie el mensaje - Sección crítica*/ 
-            pthread_mutex_lock(&mutex_mensaje);
-            while (mensaje_no_copiado)
-                pthread_cond_wait(&cond_mensaje, &mutex_mensaje); 
-            mensaje_no_copiado = true;
-            pthread_mutex_unlock(&mutex_mensaje);
-        } /*IF */
-    } /* FIN while */
-} /* Fin main */
+        mq_receive(server_queue, (char *) &mess, sizeof(struct request), 0);
+
+        if (pthread_create(&thid, &thread_attr, deal_with_message, (void *)&mess)== 0) {
+
+            // wait until thread copy message
+            pthread_mutex_lock(&mutex_message);
+            while (message_not_copied)
+                pthread_cond_wait(&cond_message, &mutex_message); 
+            message_not_copied = true;
+            pthread_mutex_unlock(&mutex_message);
+        } 
+    } 
+} 
 
 
 
