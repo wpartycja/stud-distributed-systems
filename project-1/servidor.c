@@ -6,7 +6,7 @@
 #include <string.h>
 #include "mensajes.h"
 
-/* mutex y variables condicionales para proteger la copia del mensaje*/ 
+// mutex & conditions to protect message copy
 pthread_mutex_t mutex_message;
 pthread_cond_t cond_message;
 int message_not_copied = true;          
@@ -15,7 +15,7 @@ int message_not_copied = true;
 void deal_with_message(void *mess){
     struct request message; 
     mqd_t client_queue;
-    int result; // operation result
+    //int result; // operation result
 
     // copy message to local variable 
     pthread_mutex_lock(&mutex_message);
@@ -24,7 +24,6 @@ void deal_with_message(void *mess){
     pthread_cond_signal(&cond_message); 
     pthread_mutex_unlock(&mutex_message);
 
-    /* ejecutar la petición del cliente y preparar respuesta */ 
     // // deal with client request and make a response
     struct response server_response;
     // if (message.operation_id == 0) //if mensaje.op == 0 para cada id de cada función
@@ -86,7 +85,7 @@ int main(void) {
     while (true) {
         mq_receive(server_queue, (char *) &mess, sizeof(struct request), 0);
 
-        if (pthread_create(&thid, &thread_attr, deal_with_message, (void *)&mess)== 0) {
+        if (pthread_create(&thid, &thread_attr, (void *) deal_with_message, &mess)== 0) {
 
             // wait until thread copy message
             pthread_mutex_lock(&mutex_message);
