@@ -7,10 +7,11 @@
 #include "mensajes.h"
 
 // mutex & conditions to protect message copy
-pthread_mutex_t mutex_message;
-pthread_cond_t cond_message;
-int message_not_copied = true;          
+pthread_mutex_t mutex_message = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex_server = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cond_message = PTHREAD_COND_INITIALIZER;
 
+int message_not_copied = true;          
 
 void deal_with_message(struct request *mess){
     struct request message; 
@@ -29,34 +30,54 @@ void deal_with_message(struct request *mess){
 
     printf("%d\n", server_response.result);
 
-    switch(message.operation_id)
-    {
-        case 0:
-            server_response.result = init();
-            break;
+    switch(message.operation_id){
+	    
+	    case 0:
+		    pthread_mutex_lock(&mutex_server);
+		    server_response.result = init();
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 
+	    case 1:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+
+	    case 2:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = get_value(message.key, message.value1, message.value2, message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+
+	    case 3:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+
+	    case 4:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = delete(message.key);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+
+          case 5:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = exist(message.key);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+
+	    case 6:
+		    pthread_mutex_lock(&mutex_server);
+		    //server_response.result = copy_key(message.key, message.value2);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
+		    
         default:
             break;
 
-    }
-
-    // else if (message.operation_id == 1)
-    //     server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
-
-    // else if (message.operation_id == 2)
-    //     server_response.result = get_value(message.key, message.value1, message.value2, message.value3);
-    
-    // else if (message.operation_id == 3)
-    //     server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
-
-    // else if (message.operation_id == 4)
-    //     server_response.result = delete(message.key);
-    
-    // else if (message.operation_id == 5)
-    //     server_response.result = exist(message.key);
-    
-    // else if (message.operation_id == 6)
-    //     server_response.result = copy_key(message.key, message.value2);
+    }     
         
     /* Se devuelve el resultado al cliente */
     /* Para ello se envía el resultado a su cola */ 
@@ -108,7 +129,4 @@ int main(void) {
         } 
     } 
 } 
-
-
-
 
