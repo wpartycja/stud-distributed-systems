@@ -12,6 +12,7 @@
 #include <math.h>
 
 #include "servicios.h"
+#include "servicios_help.h"
 
 #define MAX_MSG_SIZE 1024
 #define DIR_NAME "FilesPractice1"
@@ -60,20 +61,18 @@ int init() {
 
 int modify_value(int key, char* value1, int value2, double value3){
 	// initializing variables
-	// + adding variables of type char[] for values
 	FILE* fptr;
 
-	char key_str[(int)((ceil(log10(key))+1)*sizeof(char))]; // inside fancy way to calculate dynamically size of 
+	// getting the key as string and a path
+	const char* key_str = get_key_str(key);
+	const char* path = get_path(key_str);
+ 
+	// chainging the type to string
 	char value2_str[(int)((ceil(log10(value2))+1)*sizeof(char))];
 	char value3_str[(int)((ceil(log10(value3))+1)*sizeof(char))];
 
-	sprintf(key_str, "%d", key);
 	sprintf(value2_str, "%d", value2);
 	sprintf(value3_str, "%f", value3);
-
-    // creating a path to file
-	char path[strlen(DIR_NAME) + strlen(key_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
-	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
 
 	// creating new file content
 	int size = strlen(key_str) + strlen(value1) + strlen(value2_str) + strlen(value3_str) + 6; // "6" for separating commas and spaces
@@ -87,7 +86,7 @@ int modify_value(int key, char* value1, int value2, double value3){
         printf("Error: File can't be opened - file with this key doesn't exist\n");
 		return -1;
     } else {
-		printf("New values: %s have beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
+		printf("New values: %s\nHave beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
 	}
 
 	fprintf(fptr, "%s", new_line);
@@ -98,12 +97,8 @@ int modify_value(int key, char* value1, int value2, double value3){
 
 int delete_key(int key){
 	// add variable key in char[] type
-	char key_str[(int)((ceil(log10(key))+1)*sizeof(char))]; // inside fancy way to calculate dynamically size of 
-	sprintf(key_str, "%d", key);
-
-	// creating a path to file
-	char path[strlen(DIR_NAME) + strlen(key_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
-	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
+	const char* key_str = get_key_str(key);
+	const char* path = get_path(key_str);
 
 	// try to delete the file
 	if(remove(path) == 0) {
@@ -117,20 +112,9 @@ int delete_key(int key){
 }
 
 int exist(int key){
-	int key_mem;
-	if (key < 0){
-		key_mem = -key;
-	} else if (key == 0){
-		key_mem = 1;
-	} else {
-		key_mem = key;
-	}
-	char key_str[(int)((ceil(log10(key_mem))+1)*sizeof(char))]; // inside fancy way to calculate dynamically size of key_str
-	sprintf(key_str, "%d", key);
-
-	// creating a path to file
-	char path[strlen(DIR_NAME) + strlen(key_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
-	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
+	// get key as a string and a path to file
+	const char* key_str = get_key_str(key);
+	const char* path = get_path(key_str);
 	
 	if (access(path, F_OK) == 0) { // F_OK - test for the existence of the file
 		printf("Succesfully checked the existence of %s%s file.\n", key_str, FILE_TYPE);
@@ -140,7 +124,3 @@ int exist(int key){
 		return 0; // file doesn't exist
 	}
 }
-
-// int copy_key(int key1, int key2){
-
-// }
