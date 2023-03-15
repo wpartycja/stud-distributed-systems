@@ -52,7 +52,7 @@ void deal_with_message(struct request *mess){
 
 	    case 3:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
+		    server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
