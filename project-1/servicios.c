@@ -84,7 +84,8 @@ int modify_value(int key, char* value1, int value2, double value3){
 	fptr = fopen(path, "r+");
 	 
     if (NULL == fptr) {
-        printf("file can't be opened \n");
+        printf("Error: File can't be opened - file with this key doesn't exist\n");
+		return -1;
     }
 
 	fprintf(fptr, "%s", new_line);
