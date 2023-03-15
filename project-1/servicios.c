@@ -76,9 +76,9 @@ int modify_value(int key, char* value1, int value2, double value3){
 	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
 
 	// creating new file content
-	int size = strlen(key_str) + strlen(value1) + strlen(value2_str) + strlen(value3_str) + 3; // "3" for separating commas
+	int size = strlen(key_str) + strlen(value1) + strlen(value2_str) + strlen(value3_str) + 6; // "6" for separating commas and spaces
 	char new_line[size];
-	snprintf(new_line, sizeof(new_line), "%s,%s,%s,%s", key_str, value1, value2_str, value3_str);
+	snprintf(new_line, sizeof(new_line), "%s, %s, %s, %s", key_str, value1, value2_str, value3_str);
 
 	//saving to file
 	fptr = fopen(path, "r+");
