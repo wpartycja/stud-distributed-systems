@@ -95,8 +95,6 @@ int modify_value(int key, char* value1, int value2, double value3){
 }
 
 int delete_key(int key){
-	FILE* fptr;
-
 	// add variable key in char[] type
 	char key_str[(int)((ceil(log10(key))+1)*sizeof(char))]; // inside fancy way to calculate dynamically size of 
 	sprintf(key_str, "%d", key);
