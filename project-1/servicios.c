@@ -76,7 +76,7 @@ int set_value(int key, char *value1, int value2, double value3) {
 		n = strlen(temp);
 		strncat(line, temp, n);
 		
-		snprintf(temp, 1000, "%f", value3);
+		snprintf(temp, 1000, "%lf", value3);
 		n = strlen(temp);
 		strncat(line, temp, n);
 
@@ -98,10 +98,64 @@ int set_value(int key, char *value1, int value2, double value3) {
 	return 0;
 }
 
-// int get_value(int key, char *value1, int *value2, double *value3){
 
+int get_value(int key, char *value1, int *value2, double *value3){
+	char name[1000];
+	FILE *f;
+	char line[MAX_LEN];
+	char *token;
+	char *ptr;
+	int i = 0;
 
-// }
+	// Change directory where we work.
+	if(chdir("FilesPractice1") == -1){
+		perror("Error while changing directories.");
+		return -1;
+	}
+
+	// Convert key to the name of the file.
+	snprintf(name, 1000, "%d.txt", key);
+
+	// Open the file.
+	if((f = fopen(name, "r")) == NULL){
+		// If the file doesnt exist, return -1.
+		perror("Error: element with key value does not exist.");
+		return -1;
+	}
+
+	// Get values and store them.
+	fgets(line, MAX_LEN, f);	
+
+	// Extract the first token
+	token = strtok(line, ", ");
+
+	// Loop through the string to extract all other tokens.
+	while((token != NULL) && i < 3){
+		token = strtok(NULL, ", ");
+		switch(i){
+			case 0:
+				value1 = token;
+				break;
+				
+			case 1:
+				*value2 = strtol(token, &ptr, 10);
+				break;
+			
+			case 2:
+				*value3 = strtod(token, &ptr);
+				break;
+		}
+		i++;
+	}
+	
+	// Close the file.
+	if (fclose(f) == EOF) {
+        	perror("Error while closing the file.");
+        	return = -1;
+    	}
+
+	return 0;
+}
 
 // int modify_value(int key, char, *value1, int value2, double value3){
 
@@ -114,3 +168,4 @@ int set_value(int key, char *value1, int value2, double value3) {
 // int copy_key(int key1, int key2){
 
 // }
+
