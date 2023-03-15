@@ -86,7 +86,9 @@ int modify_value(int key, char* value1, int value2, double value3){
     if (NULL == fptr) {
         printf("Error: File can't be opened - file with this key doesn't exist\n");
 		return -1;
-    }
+    } else {
+		printf("New values: %s have beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
+	}
 
 	fprintf(fptr, "%s", new_line);
     fclose(fptr);
@@ -115,7 +117,6 @@ int delete_key(int key){
 }
 
 int exist(int key){
-	// add variable key in char[] type
 	int key_mem;
 	if (key < 0){
 		key_mem = -key;
@@ -130,10 +131,12 @@ int exist(int key){
 	// creating a path to file
 	char path[strlen(DIR_NAME) + strlen(key_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
 	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
-
+	
 	if (access(path, F_OK) == 0) { // F_OK - test for the existence of the file
+		printf("Succesfully checked the existence of %s%s file.\n", key_str, FILE_TYPE);
 		return 1; // file exist
 	} else {
+		printf("File named %s%s doesn't exist.\n", key_str, FILE_TYPE);
 		return 0; // file doesn't exist
 	}
 }
@@ -141,5 +144,3 @@ int exist(int key){
 // int copy_key(int key1, int key2){
 
 // }
-
-
