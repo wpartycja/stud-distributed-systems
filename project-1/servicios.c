@@ -94,9 +94,27 @@ int modify_value(int key, char* value1, int value2, double value3){
     return 0;
 }
 
-// int delete_key(int key){
+int delete_key(int key){
+	FILE* fptr;
 
-// }
+	// add variable key in char[] type
+	char key_str[(int)((ceil(log10(key))+1)*sizeof(char))]; // inside fancy way to calculate dynamically size of 
+	sprintf(key_str, "%d", key);
+
+	// creating a path to file
+	char path[strlen(DIR_NAME) + strlen(key_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
+	snprintf(path, sizeof(path), "%s/%s%s", DIR_NAME, key_str, FILE_TYPE);
+
+	// try to delete the file
+	if(remove(path) == 0) {
+		printf("File %s%s deleted successfully!\n", key_str, FILE_TYPE);
+	} else {
+		printf("Error: Unable to delete file %s%s\n", key_str, FILE_TYPE);
+		return -1;
+	}
+	
+	return 0;
+}
 
 // int copy_key(int key1, int key2){
 
