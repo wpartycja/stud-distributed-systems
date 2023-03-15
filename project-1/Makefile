@@ -5,8 +5,7 @@ CC = gcc
 CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
 
 LDFLAGS = -L$(INSTALL_PATH)/lib/
-LDLIBS = -lpthread -lrt
-
+LDLIBS = -lpthread -lrt -static -lm
 
 all: $(BIN_FILES)
 .PHONY : all
