@@ -2,6 +2,6 @@
 #include <stdio.h>
 
 int main(){
-    delete_key(0);
+    exist(2);
     return 0;
     }
