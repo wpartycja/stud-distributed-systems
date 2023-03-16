@@ -9,9 +9,12 @@
 #include <string.h>
 #include <dirent.h>
 #include <errno.h>
+#include <math.h>
 #include "servicios.h"
 
 #define MAX_MSG_SIZE 1024
+#define DIR_NAME "FilesPractice1"
+#define FILE_TYPE ".txt"
 
 int init() {
 	DIR* dir = opendir("FilesPractice1");
@@ -165,7 +168,47 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 // }
 
-// int copy_key(int key1, int key2){
+int copy_key(int key1, int key2){
+    // add variable key1 and key2 in char[] type
+    char key1_str[(int)((ceil(log10(key1))+1)*sizeof(char))];
+    char key2_str[(int)((ceil(log10(key2))+1)*sizeof(char))]; 
+    sprintf(key1_str, "%d", key1);
+    sprintf(key2_str, "%d", key2);
 
-// }
+    // creating a path to file1 (key1)
+    char path1[strlen(DIR_NAME) + strlen(key1_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
+    snprintf(path1, sizeof(path1), "%s/%s%s", DIR_NAME, key1_str, FILE_TYPE);
+
+    // creating a path to file2 (key2)
+    char path2[strlen(DIR_NAME) + strlen(key2_str) + strlen(FILE_TYPE) + 2]; // 2 becuase of "/" and EOF
+    snprintf(path2, sizeof(path2), "%s/%s%s", DIR_NAME, key2_str, FILE_TYPE);
+
+    FILE* fptr1 = fopen(path1, "r");
+    FILE* fptr2 = fopen(path2, "w");
+
+    if (fptr1 == NULL){
+        printf("Error: File with key %s%s doesn't exist\n", key1_str, FILE_TYPE);
+        return -1;
+    }
+
+    if (fptr2 == NULL){
+        printf("Error: File with key %s%s can't be created\n", key2_str, FILE_TYPE);
+        return -1;
+    }
+
+    // copy the contents of the file1 to file2
+    char buffer[1024];
+    size_t bytes;
+
+    while ((bytes = fread(buffer, 1, sizeof(buffer), fptr1)) > 0){
+        fwrite(buffer, 1, bytes, fptr2);
+    }
+
+    fclose(fptr1);
+    fclose(fptr2);
+
+    printf("Key %s has been copied to %s\n", key1_str, key2_str);
+
+    return 0;
+}
 
