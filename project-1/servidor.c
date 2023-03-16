@@ -58,13 +58,13 @@ void deal_with_message(struct request *mess){
 
 	    case 4:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = delete(message.key);
+		    server_response.result = delete_key(message.key);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
           case 5:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = exist(message.key);
+		    server_response.result = exist(message.key);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
