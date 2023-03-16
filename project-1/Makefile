@@ -1,4 +1,4 @@
-BIN_FILES  = cliente servidor 
+BIN_FILES  = clave.o cliente servidor 
 
 CC = gcc
 
@@ -10,9 +10,12 @@ LDLIBS = -lpthread -lrt -static -lm
 all: $(BIN_FILES)
 .PHONY : all
 
+cliente: cliente.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lclave 
 
-cliente: cliente.o clave.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
+clave.o: clave.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@ -fPIC
+	$(CC) $(CPPFLAGS) $(CFLAGS) -shared $< -o libclave.so -fPIC
 
 servidor: servidor.o servicios.o servicios_help.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
@@ -21,8 +24,6 @@ servidor: servidor.o servicios.o servicios_help.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(BIN_FILES) *.o
+	rm -f $(BIN_FILES) *.o *.so
 
-.SUFFIXES:
 .PHONY : clean
-
