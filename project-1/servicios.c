@@ -98,7 +98,7 @@ int set_value(int key, char *value1, int value2, double value3) {
 
 	// Close the file.
 	if(close(status) == -1){
-		perror("Error while closing the file.");
+		perror("Error while closing the file.\n");
 		return -1;
 	}
 
@@ -116,7 +116,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 	// Change directory where we work.
 	if(chdir("FilesPractice1") == -1){
-		perror("Error while changing directories.");
+		perror("Error while changing directories.\n");
 		return -1;
 	}
 
@@ -126,7 +126,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	// Open the file.
 	if((f = fopen(name, "r")) == NULL){
 		// If the file doesnt exist, return -1.
-		perror("Error: element with key value does not exist.");
+		perror("Error: element with key value does not exist.\n");
 		return -1;
 	}
 
@@ -154,10 +154,12 @@ int get_value(int key, char *value1, int *value2, double *value3){
 		}
 		i++;
 	}
+
+	printf("Succesfully get values: %s, %d, %lf\n", value1, *value2, *value3);
 	
 	// Close the file.
 	if (fclose(f) == EOF) {
-        	perror("Error while closing the file.");
+        	perror("Error while closing the file.\n");
         	return -1;
     	}
 
