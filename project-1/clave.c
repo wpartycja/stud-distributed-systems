@@ -141,7 +141,7 @@ int delete_key(int key) {
 
     server_queue = mq_open("/SERVER", O_WRONLY); 
 
-    
+    // fill request
     req.operation_id = 4;
     strcpy(req.queue_name, queue_name);
     req.key = key;
@@ -172,7 +172,7 @@ int exist(int key) {
 
     server_queue = mq_open("/SERVER", O_WRONLY); 
 
-    
+     // fill request
     req.operation_id = 5;
     strcpy(req.queue_name, queue_name);
     req.key = key;
@@ -187,27 +187,33 @@ int exist(int key) {
     return res.result;
 }
 
-// int copy_key(int key1, int key2) {
-//     mqd_t q_servidor; /* cola de mensajes del proceso servidor */
-//     mqd_t q_cliente; /* cola de mensajes para el proceso cliente */ 
-//     struct peticion pet; struct respuesta res; struct mq_attr attr; 
-//     char queuename[MAXSIZE];
+int copy_key(int key1, int key2) {
+    mqd_t server_queue; 
+    mqd_t clinet_queue; 
+    struct request req;
+    struct response res;
+    struct mq_attr attr; 
 
-//     attr.mq_maxmsg = 1; 
-//     attr.mq_msgsize = sizeof(res);
-//     sprintf(queuename, "/Cola-%d", getpid());
-//     q_cliente = mq_open(queuename, O_CREAT|O_RDONLY, 0700, &attr);
+    char queue_name[MAXSIZE];
 
-//     q_servidor = mq_open("/SERVIDOR", O_WRONLY); 
+    attr.mq_maxmsg = 1; 
+    attr.mq_msgsize = sizeof(res);
+    sprintf(queue_name, "/Queue-%d", getpid());
+    clinet_queue = mq_open(queue_name, O_CREAT|O_RDONLY, 0700, &attr);
 
-//     /* se rellena la petición */ //EDITAR
-//     pet.codigo_ope = 2; strcpy(pet.q_name, queuename); pet.key = key; pet.value2 = key2
-//     mq_send(q_servidor, (const char *) &pet, sizeof(pet), 0);
-//     mq_receive(q_cliente, (char*) &res, sizeof(res), 0);
+    server_queue = mq_open("/SERVER", O_WRONLY); 
+
+     // fill request
+    req.operation_id = 6;
+    strcpy(req.queue_name, queue_name);
+    req.key = key1;
+    req.value2 = key2;
+    mq_send(server_queue, (const char *) &req, sizeof(req), 0);
+    mq_receive(clinet_queue, (char*) &res, sizeof(res), 0);
     
-//     mq_close(q_servidor); 
-//     mq_close(q_cliente); 
-//     mq_unlink(queuename);
+    mq_close(server_queue); 
+    mq_close(clinet_queue); 
+    mq_unlink(queue_name);
 
-//     return res.resultado;
-// }
+    return res.result;
+}

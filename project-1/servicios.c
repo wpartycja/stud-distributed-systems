@@ -14,7 +14,6 @@
 #include "servicios.h"
 #include "servicios_help.h"
 
-
 #define MAX_MSG_SIZE 1024
 #define DIR_NAME "FilesPractice1"
 #define FILE_TYPE ".txt"
@@ -23,7 +22,7 @@
 int init() {
 	DIR* dir = opendir(DIR_NAME);
 	struct dirent *nextFile;
-	char filePath[1024];
+	char filePath[MAX_MSG_SIZE];
 
 	// Search for the directory.
 	if(dir) {
