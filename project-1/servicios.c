@@ -27,25 +27,31 @@ int init() {
 	// Search for the directory.
 	if(dir) {
 		// If directory exists, we proceed to delete all the files within it.
+        printf("Directory %s found. Deleting all files within it.\n", DIR_NAME);
 		while((nextFile = readdir(dir)) != NULL){
 			sprintf(filePath, "%s/%s", DIR_NAME, nextFile->d_name);
 			remove(filePath);
+            printf("Deleted file: %s\n", filePath);
 		}
 		
 		// Close the directory.
 		if((closedir(dir)) == -1){
 			perror("Error while closing the directory.\n");
 			return(-1);
+		} else {
+			printf("Directory %s closed successfully.\n", DIR_NAME);
 		}
 
 	} else if (ENOENT == errno){
 		// If the directory doesnt exist, we create it. 
 		mkdir(DIR_NAME, 0700);
+        printf("Directory %s not found. Creating directory.\n", DIR_NAME);
 	} else {
 		perror("Error while opening the directory.\n");
 		return(-1);
 	}
-
+    
+    printf("Initialization completed successfully\n");
 	return 0;
 }
    
@@ -89,10 +95,13 @@ int set_value(int key, char *value1, int value2, double value3) {
 
 		// Write the values into the file.
 		write(status, line, strlen(line));
+        
+        printf("Values for key %d: value1=\"%s\", value2=%d, value3=%f\n", key, value1, value2, value3);
+        printf("Successfully set values for key %d\n", key);
 
 	} else {
 		// Since file already exists, it is considered an error.
-		perror("Error: key value already exists.\n");
+		perror("Error: key value already exists for key %d\n", key);
 		return -1;
 	}
 
@@ -115,15 +124,19 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	int i = 0;
 
 	// Change directory where we work.
+    printf("Current directory: %s\n", getcwd(NULL, 0));
+    printf("Changing directory to %s\n", DIR_NAME);
 	if(chdir(DIR_NAME) == -1){
 		perror("Error while changing directories.\n");
 		return -1;
 	}
 
 	// Convert key to the name of the file.
+    printf("Converting key %d to file name %s\n", key, name);
 	snprintf(name, 1000, "%d.txt", key);
 
 	// Open the file.
+    printf("Opening file %s\n", name);
 	if((f = fopen(name, "r")) == NULL){
 		// If the file doesnt exist, return -1.
 		perror("Error: element with key value does not exist.\n");
@@ -155,9 +168,10 @@ int get_value(int key, char *value1, int *value2, double *value3){
 		i++;
 	}
 
-	printf("Succesfully get values: %s, %d, %lf\n", value1, *value2, *value3);
+	printf("Successfully get values for key %d: %s, %d, %lf\n", key, value1, *value2, *value3);
 	
 	// Close the file.
+    printf("Closing file %s\n", name);
 	if (fclose(f) == EOF) {
         	perror("Error while closing the file.\n");
         	return -1;
@@ -191,10 +205,14 @@ int modify_value(int key, char* value1, int value2, double value3){
 	fptr = fopen(path, "r+");
 	 
     if (NULL == fptr) {
-        printf("Error: File can't be opened - file with this key doesn't exist\n");
+        printf("Error: File can't be opened. File with key %s does not exist.\n", key_str);
 		return -1;
     } else {
-		printf("New values: %s\nHave beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
+		printf("Modifying file with key: %s\n", key_str);
+		printf("File path: %s\n", path);
+		printf("New line to be saved: %s\n", new_line);
+		printf("Values %s have been modified in %s%s file.\n", new_line, key_str, FILE_TYPE);
+	}
 	}
 
 	fprintf(fptr, "%s", new_line);
@@ -217,6 +235,8 @@ int delete_key(int key){
 		return -1;
 	}
 	
+    // Print the path of the deleted file
+	printf("File path: %s\n", path);
 	return 0;
 }
 
@@ -252,11 +272,15 @@ int copy_key(int key1, int key2){
     if (fptr1 == NULL){
         printf("Error: File with key %s%s doesn't exist\n", key1_str, FILE_TYPE);
         return -1;
+    } else {
+        printf("File with key %s%s has been successfully opened for reading\n", key1_str, FILE_TYPE);
     }
 
     if (fptr2 == NULL){
         printf("Error: File with key %s%s can't be created\n", key2_str, FILE_TYPE);
         return -1;
+    } else {
+        printf("File with key %s%s has been successfully opened for writing\n", key2_str, FILE_TYPE);
     }
 
     // copy the contents of the file1 to file2
