@@ -93,8 +93,8 @@ int get_value(int key, char *value1, int *value2, double *value3) {
     // AQUI, NO TENEMOS QUE PASARLE LOS VALORES EN LA PETICION, PORQUE EL GET VALUE LOS RECIBE
     // TENEMOS QUE ALMACENAR LOS VALORES DE RESPUESTA EN LOS PUNTEROS QUE SE PASAN COMO PARAMETROS
     strcpy(req.value1, value1); 
-    req.value2 = value2; 
-    req.value3 = value3;
+    req.value2 = *value2; 
+    req.value3 = *value3;
 
     mq_send(server_queue, (const char *) &req, sizeof(req), 0);
     mq_receive(client_queue, (char*) &res, sizeof(res), 0);

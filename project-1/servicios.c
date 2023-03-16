@@ -115,7 +115,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	int i = 0;
 
 	// Change directory where we work.
-	if(chdir("FilesPractice1") == -1){
+	if(chdir(DIR_NAME) == -1){
 		perror("Error while changing directories.\n");
 		return -1;
 	}

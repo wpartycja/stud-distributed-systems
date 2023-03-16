@@ -5,8 +5,7 @@
 int main(){
     exist(1);
     copy_key(1, 3);
-    set_value(2, "lalal", 5, 6);
-    
+   
 
     char val1[256];
     int *val2 = malloc(sizeof(int));  
