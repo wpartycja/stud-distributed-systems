@@ -14,7 +14,7 @@ all: $(BIN_FILES)
 cliente: cliente.o clave.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
 
-servidor: servidor.o servicios.o
+servidor: servidor.o servicios.o servicios_help.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
 
 %.o: %.c
