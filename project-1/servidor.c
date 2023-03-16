@@ -16,7 +16,6 @@ int message_not_copied = true;
 void deal_with_message(struct request *mess){
     struct request message; 
     mqd_t client_queue;
-    //int result; // operation result
 
     // copy message to local variable 
     pthread_mutex_lock(&mutex_message);
@@ -25,9 +24,8 @@ void deal_with_message(struct request *mess){
     pthread_cond_signal(&cond_message); 
     pthread_mutex_unlock(&mutex_message);
 
-    // // deal with client request and make a response
+    // deal with client request and make a response
     struct response server_response;
-
     printf("%d\n", server_response.result);
 
     switch(message.operation_id){
@@ -40,13 +38,13 @@ void deal_with_message(struct request *mess){
 
 	    case 1:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
+		    server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
 	    case 2:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = get_value(message.key, message.value1, message.value2, message.value3); @TODO: fix types (pointers)
+		    server_response.result = get_value(message.key, message.value1, &message.value2, &message.value3);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
@@ -70,7 +68,7 @@ void deal_with_message(struct request *mess){
 
 	    case 6:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = copy_key(message.key, message.value2);
+		    server_response.result = copy_key(message.key, message.value2);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 		    
@@ -88,9 +86,13 @@ void deal_with_message(struct request *mess){
     if (client_queue == -1)
         perror("Error in opening client queue"); 
     else {
-        mq_send(client_queue, (const char *) &server_response, sizeof(server_response), 0);
-        mq_close(client_queue); }
-
+	// Send response to client.
+	if(mq_send(client_queue, (const char *) &server_response, sizeof(server_response), 0) == -1)
+		perror("Error while sending response to client");
+	
+	if(mq_close(client_queue) == -1)
+		perror("Error while closing the client queue");
+    }
     pthread_exit(0); 
 }
 
@@ -129,4 +131,3 @@ int main(void) {
         } 
     } 
 } 
-
