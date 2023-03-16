@@ -40,7 +40,7 @@ void deal_with_message(struct request *mess){
 
 	    case 1:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
+		    server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
@@ -70,7 +70,7 @@ void deal_with_message(struct request *mess){
 
 	    case 6:
 		    pthread_mutex_lock(&mutex_server);
-		    //server_response.result = copy_key(message.key, message.value2);
+		    server_response.result = copy_key(message.key, message.value2);
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 		    
