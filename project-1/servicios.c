@@ -102,7 +102,7 @@ int set_value(int key, char *value1, int value2, double value3) {
 int get_value(int key, char *value1, int *value2, double *value3){
 	char name[1000];
 	FILE *f;
-	char line[MAX_LEN];
+	char line[MAX_MSG_SIZE];
 	char *token;
 	char *ptr;
 	int i = 0;
@@ -124,7 +124,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	}
 
 	// Get values and store them.
-	fgets(line, MAX_LEN, f);	
+	fgets(line, MAX_MSG_SIZE, f);	
 
 	// Extract the first token
 	token = strtok(line, ", ");
@@ -134,7 +134,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 		token = strtok(NULL, ", ");
 		switch(i){
 			case 0:
-				value1 = token;
+				strcpy(value1, token);
 				break;
 				
 			case 1:
@@ -151,7 +151,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	// Close the file.
 	if (fclose(f) == EOF) {
         	perror("Error while closing the file.");
-        	return = -1;
+        	return -1;
     	}
 
 	return 0;
