@@ -2,6 +2,6 @@
 #include <stdio.h>
 
 int main(){
-    modify_value(1, "test", 6, 7);
+    delete_key(0);
     return 0;
     }
