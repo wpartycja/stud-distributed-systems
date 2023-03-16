@@ -2,6 +2,6 @@
 #include <stdio.h>
 
 int main(){
-    init();
+    exist(2);
     return 0;
     }

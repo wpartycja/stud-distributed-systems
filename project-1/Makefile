@@ -5,8 +5,7 @@ CC = gcc
 CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
 
 LDFLAGS = -L$(INSTALL_PATH)/lib/
-LDLIBS = -lpthread -lrt
-
+LDLIBS = -lpthread -lrt -static -lm
 
 all: $(BIN_FILES)
 .PHONY : all
@@ -15,7 +14,7 @@ all: $(BIN_FILES)
 cliente: cliente.o clave.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
 
-servidor: servidor.o servicios.o
+servidor: servidor.o servicios.o servicios_help.o
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
 
 %.o: %.c
