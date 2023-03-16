@@ -35,30 +35,39 @@ int init(void) {
     return res.result;
 }
 
-// int set_value(int key, char *value1, int value2, double value3) {
-//     mqd_t q_servidor; /* cola de mensajes del proceso servidor */
-//     mqd_t q_cliente; /* cola de mensajes para el proceso cliente */ 
-//     struct peticion pet; struct respuesta res; struct mq_attr attr; 
-//     char queuename[MAXSIZE];
+int set_value(int key, char *value1, int value2, double value3) {
+    mqd_t server_queue; 
+    mqd_t client_queue; 
 
-//     attr.mq_maxmsg = 1; 
-//     attr.mq_msgsize = sizeof(res);
-//     sprintf(queuename, "/Cola-%d", getpid());
-//     q_cliente = mq_open(queuename, O_CREAT|O_RDONLY, 0700, &attr);
+    struct request req;
+    struct response res;
+    struct mq_attr attr; 
+    char queue_name[MAXSIZE];
 
-//     q_servidor = mq_open("/SERVIDOR", O_WRONLY); 
+    attr.mq_maxmsg = 1; 
+    attr.mq_msgsize = sizeof(res);
+    sprintf(queue_name, "/Queue-%d", getpid());
+    client_queue = mq_open(queue_name, O_CREAT|O_RDONLY, 0700, &attr);
 
-//     /* se rellena la petición */ //EDITAR
-//     pet.codigo_ope = 1; strcpy(pet.q_name, queuename); pet.key = key; strcpy(pet.value1 = value1); pet.value2 = value2; pet.value3 = value3;
-//     mq_send(q_servidor, (const char *) &pet, sizeof(pet), 0);
-//     mq_receive(q_cliente, (char*) &res, sizeof(res), 0);
+    server_queue = mq_open("/SERVER", O_WRONLY); 
+
+    // fill request
+    req.operation_id = 1;
+    strcpy(req.queue_name, queue_name);
+    req.key = key;
+    strcpy(req.value1, value1);
+    req.value2 = value2;
+    req.value3 = value3;
+
+    mq_send(server_queue, (const char *) &req, sizeof(req), 0);
+    mq_receive(client_queue, (char*) &res, sizeof(res), 0);
     
-//     mq_close(q_servidor); 
-//     mq_close(q_cliente); 
-//     mq_unlink(queuename);
+    mq_close(server_queue); 
+    mq_close(client_queue); 
+    mq_unlink(queue_name);
 
-//     return res.resultado;
-// }
+    return res.result;
+}
 
 // int get_value(int key, char *value1, int *value2, double *value3) {
 //     mqd_t q_servidor; /* cola de mensajes del proceso servidor */
