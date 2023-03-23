@@ -1,28 +1,29 @@
-BIN_FILES  = cliente servidor 
+BIN_FILES  = claves.o cliente servidor 
 
 CC = gcc
 
 CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
 
-LDFLAGS = -L$(INSTALL_PATH)/lib/
-LDLIBS = -lpthread -lrt -static -lm
+LDFLAGS = -L.
+LDLIBS = -lpthread -lm
 
 all: $(BIN_FILES)
 .PHONY : all
 
+claves.o: claves.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@ -fPIC
+	$(CC) $(CPPFLAGS) $(CFLAGS) -shared $< -o libclaves.so -fPIC
 
-cliente: cliente.o clave.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
+cliente: cliente.o
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lclaves -lrt
 
 servidor: servidor.o servicios.o servicios_help.o
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lrt
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 clean:
-	rm -f $(BIN_FILES) *.o
+	rm -f $(BIN_FILES) *.o *.so
 
-.SUFFIXES:
 .PHONY : clean
-

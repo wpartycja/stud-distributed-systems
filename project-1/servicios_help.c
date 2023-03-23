@@ -5,7 +5,7 @@
 
 #define DIR_NAME "FilesPractice1"
 #define FILE_TYPE ".txt"
-
+#define MAX_SIZE 256
 
 const char* get_key_str(int key){
 	int key_mem;
@@ -34,4 +34,14 @@ const char* get_path(const char* key_str){
 	strcpy(path_ptr, path);
 
 	return path_ptr;
+}
+
+int check_size_v1(char *value1){
+	int n = strlen(value1)+1;
+
+	if(n > MAX_SIZE){
+		return -1; // If size if bigger.
+	}
+
+	return 0;
 }
