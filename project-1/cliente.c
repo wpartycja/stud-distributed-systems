@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-#include "clave.h"
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(){
-    exist(1);
-    copy_key(1, 3);
-   
-
-    char val1[256];
-    int *val2 = malloc(sizeof(int));  
-    double *val3 = malloc(sizeof(double));  
-
-    get_value(1, val1, val2, val3);
-
-    return 0;
-    }
-=======
 #include "claves.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,4 +68,3 @@ int main(){
     copy_key(3, 4);
 
 }
->>>>>>> Final
