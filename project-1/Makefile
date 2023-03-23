@@ -5,7 +5,7 @@ CC = gcc
 CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
 
 LDFLAGS = -L.
-LDLIBS = -lpthread -lrt -lm
+LDLIBS = -lpthread -lm
 
 all: $(BIN_FILES)
 .PHONY : all
@@ -15,10 +15,10 @@ claves.o: claves.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -shared $< -o libclaves.so -fPIC
 
 cliente: cliente.o
-	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lclaves 
+	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lclaves -lrt
 
 servidor: servidor.o servicios.o servicios_help.o
-	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ 
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lrt
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
