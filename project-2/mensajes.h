@@ -13,7 +13,6 @@ struct response {
 
 struct request {
     int operation_id;
-    char queue_name[MAXSIZE]; 
     int key;
     char value1[MAXSIZE];
     int value2; // can be used as key2 in copy_key() func
