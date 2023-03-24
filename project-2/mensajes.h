@@ -2,6 +2,7 @@
 #define _MENSAJES_H 
 
 #define MAXSIZE 256
+
 struct response {
     int result; 
     char value1[MAXSIZE];
