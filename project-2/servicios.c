@@ -15,7 +15,7 @@
 #include "servicios_help.h"
 
 #define MAX_MSG_SIZE 1024
-#define DIR_NAME "FilesPractice1"
+#define DIR_NAME "FilesPractice2"
 #define FILE_TYPE ".txt"
 
 
