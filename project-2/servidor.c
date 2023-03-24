@@ -43,11 +43,11 @@ void deal_with_message(struct request *mess){
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
-	    // case 1:
-		//     pthread_mutex_lock(&mutex_server);
-		//     server_response.result = set_value(message.key, message.value1, message.value2, message.value3);
-		//     pthread_mutex_unlock(&mutex_server);
-		//     break;
+	    case 1:
+		    pthread_mutex_lock(&mutex_server);
+		    set_value(message.key, message.value1, message.value2, message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 
 	    // case 2:
 		//     pthread_mutex_lock(&mutex_server);
@@ -167,7 +167,6 @@ int main(int argc, char *argv[]) {
         memcpy(&mess, buf, sizeof(buf));
 
         if (bytes_received > 0){
-            printf("dupa");
             if (pthread_create(&thid, &thread_attr, (void *) deal_with_message, &mess)== 0) {
 
                 // wait until thread copy message

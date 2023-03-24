@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-#define DIR_NAME "FilesPractice1"
+#define DIR_NAME "FilesPractice2"
 #define FILE_TYPE ".txt"
 #define MAX_SIZE 256
 
