@@ -19,19 +19,19 @@ int main(){
     // Inserting tuples - error: previously existing key.
     set_value(1, "qwert", 56, 74.0);
     
-    // // -------------------- GET_VALUE --------------------
-    // char val1[256];
-    // int *val2 = malloc(sizeof(int));  
-    // double *val3 = malloc(sizeof(double));  
+    // -------------------- GET_VALUE --------------------
+    char val1[256];
+    int *val2 = malloc(sizeof(int));  
+    double *val3 = malloc(sizeof(double));  
     
-    // // Getting values of tuples - achieved successfully.
-    // get_value(1, val1, val2, val3);
+    // Getting values of tuples - achieved successfully.
+    get_value(1, val1, val2, val3);
 
-    // // Getting values of tuples - error: key doesnt exist.
-    // get_value(10, val1, val2, val3);
+    // Getting values of tuples - error: key doesnt exist.
+    get_value(10, val1, val2, val3);
 
-    // free(val2);
-    // free(val3);
+    free(val2);
+    free(val3);
 	
     // // -------------------- MODIFY_VALUE --------------------
     // // Modifying values of tuples - achieved successfully.

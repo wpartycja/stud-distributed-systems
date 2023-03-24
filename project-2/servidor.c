@@ -49,11 +49,11 @@ void deal_with_message(struct request *mess){
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
-	    // case 2:
-		//     pthread_mutex_lock(&mutex_server);
-		//     server_response.result = get_value(message.key, message.value1, &message.value2, &message.value3);
-		//     pthread_mutex_unlock(&mutex_server);
-		//     break;
+	    case 2:
+		    pthread_mutex_lock(&mutex_server);
+		    get_value(message.key, message.value1, &message.value2, &message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 
 	    // case 3:
 		//     pthread_mutex_lock(&mutex_server);
