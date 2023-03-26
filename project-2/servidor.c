@@ -55,11 +55,11 @@ void deal_with_message(struct request *mess){
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
-	    // case 3:
-		//     pthread_mutex_lock(&mutex_server);
-		//     modify_value(message.key, message.value1, message.value2, message.value3);
-		//     pthread_mutex_unlock(&mutex_server);
-		//     break;
+	    case 3:
+		    pthread_mutex_lock(&mutex_server);
+		    modify_value(message.key, message.value1, message.value2, message.value3);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 
 	    case 4:
 		    pthread_mutex_lock(&mutex_server);
@@ -73,11 +73,11 @@ void deal_with_message(struct request *mess){
 		    pthread_mutex_unlock(&mutex_server);
 		    break;
 
-	    // case 6:
-		//     pthread_mutex_lock(&mutex_server);
-		//     server_response.result = copy_key(message.key, message.value2);
-		//     pthread_mutex_unlock(&mutex_server);
-		//     break;
+	    case 6:
+		    pthread_mutex_lock(&mutex_server);
+		    copy_key(message.key, message.value2);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 		    
         default:
             break;

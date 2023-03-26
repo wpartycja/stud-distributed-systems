@@ -199,52 +199,17 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 
 int modify_value(int key, char* value1, int value2, double value3){
-	// initializing variables
-	FILE* fptr;
-	int sz;
-
-	// Verify if value1 is the right size.
-	if((sz = check_size_v1(value1)) == -1){
-		perror("Error: size of value1 is bigger than 256 bytes.\n");
+	
+	if (exist(key) == -1){
+		printf("Error: File can't be opened - file with this key doesn't exist\n");
 		printf("----------------------------------------\n");
-
 		return -1;
 	}
-
-	// getting the key as string and a path
-	const char* key_str = get_key_str(key);
-	const char* path = get_path(key_str);
- 
-	// chainging the type to string
-	char value2_str[(int)((ceil(log10(value2))+1)*sizeof(char))];
-	char value3_str[(int)((ceil(log10(value3))+1)*sizeof(char))];
-
-	sprintf(value2_str, "%d", value2);
-	sprintf(value3_str, "%f", value3);
-
-	// creating new file content
-	int size = strlen(key_str) + strlen(value1) + strlen(value2_str) + strlen(value3_str) + 6; // "6" for separating commas and spaces
-	char new_line[size];
-	snprintf(new_line, sizeof(new_line), "%s, %s, %s, %s", key_str, value1, value2_str, value3_str);
-
-	//saving to file
-	fptr = fopen(path, "r+");
-	 
-    if (NULL == fptr) {
-        printf("Error: File can't be opened - file with this key doesn't exist\n");
-	  printf("----------------------------------------\n");
-
+	
+	if (set_value(key, value1, value2, value3) == -1){
+		perror("Error while changing the values.\n");
 		return -1;
-    } else {
-	    	printf("Modifying file with key: %s\n", key_str);
-		printf("File path: %s\n", path);
-		printf("New tuple to be saved: %s\n", new_line);
-		printf("New values: %s\nHave beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
 	}
-
-	fprintf(fptr, "%s", new_line);
-      fclose(fptr);
-
 	printf("----------------------------------------\n");
 	return 0;
 }
@@ -278,12 +243,12 @@ int exist(int key){
 	if (access(path, F_OK) == 0) { // F_OK - test for the existence of the file
 		printf("Succesfully checked the existence of %s%s file.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 1; // file exist
+		return 0; // file exist
 	
 	} else {
 		printf("File named %s%s doesn't exist.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 0; // file doesn't exist
+		return -1; // file doesn't exist
 	}
 }
 
@@ -296,7 +261,7 @@ int copy_key(int key1, int key2){
 	const char* path1 = get_path(key1_str);
 
 	// opening the files
-    	FILE* fptr1 = fopen(path1, "r");
+    FILE* fptr1 = fopen(path1, "r");
 
 	// If file with key1 doesnt exist, information isnt copied.
 	if (fptr1 == NULL){
@@ -306,8 +271,8 @@ int copy_key(int key1, int key2){
 
 	// Retrieve values from file with key1.
 	char val1[256];
-    	int *val2 = malloc(sizeof(int));  
-    	double *val3 = malloc(sizeof(double)); 
+    int *val2 = malloc(sizeof(int));  
+    double *val3 = malloc(sizeof(double)); 
 	
 	int res1 = get_value(key1, val1, val2, val3);
 	if(res1 == -1){
@@ -334,7 +299,7 @@ int copy_key(int key1, int key2){
 	}
 
 	free(val2);
-    	free(val3);
+    free(val3);
 
   	printf("Key %s has been copied to %s\n", key1_str, key2_str);
 
