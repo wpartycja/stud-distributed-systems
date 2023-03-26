@@ -13,6 +13,7 @@
 
 #define BUF_SIZE    276 // 256 + 4 + 4 + 8 + 4
 #define PORT        2137
+#define SLEEP_TIME  4
 
 // mutex & conditions to protect message copy
 pthread_mutex_t mutex_message = PTHREAD_MUTEX_INITIALIZER;
@@ -127,7 +128,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-        // put socket in listening mode
+    // put socket in listening mode
     int listen_result = listen(socket_fd, 1);
     if (listen_result < 0) {
         perror("error putting socket in listening mode");
@@ -144,7 +145,6 @@ int main(int argc, char *argv[]) {
 
     // listen for connections
     while (1) {
-        printf("Listening...\n");
         int conn_fd = accept(socket_fd, (struct sockaddr*) &client_address, &client_address_len);
         if (conn_fd < 0) {
             perror("error accepting connection");
@@ -160,8 +160,8 @@ int main(int argc, char *argv[]) {
             break;
         }
         printf(
-                "Received %d bytes from %s:\n%.*s\n\n",
-                bytes_received, inet_ntoa(client_address.sin_addr), bytes_received, buf
+            "Received %d bytes from %s:\n%.*s\n\n",
+            bytes_received, inet_ntoa(client_address.sin_addr), bytes_received, buf
         );
 
         memcpy(&mess, buf, sizeof(buf));
@@ -175,10 +175,12 @@ int main(int argc, char *argv[]) {
                     pthread_cond_wait(&cond_message, &mutex_message); 
                 message_not_copied = true;
                 pthread_mutex_unlock(&mutex_message);
-            } 
+
+                // to nice console view
+                sleep(SLEEP_TIME);
+            }
         }
         
-
         close(conn_fd);
     } 
 } 

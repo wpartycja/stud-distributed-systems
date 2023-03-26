@@ -11,6 +11,7 @@
 
 #define BUF_SIZE    276
 #define PORT        2137
+#define MAX_SIZE    256
 
 
 int init(){
@@ -67,11 +68,13 @@ int init(){
 }
 
 int set_value(int key, char *value1, int value2, double value3) {
-    int n = strlen(value1)+1;
-    if(n > 256){
- 	    perror("Error: value1 is greater than 256 bytes.");
-            return -1; // If size if bigger.
-    }
+    	// Verify if value1 is the right size.
+	if(strlen(value1) >= MAX_SIZE){
+		printf("Error set_value(): size of value1 in file %d is bigger than 256 bytes.\n", key);
+		printf("----------------------------------------\n");
+
+		return -1;
+	}
 
     // create needed structures
     char buf[BUF_SIZE];
