@@ -57,7 +57,7 @@ void deal_with_message(struct request *mess){
 
 	    // case 3:
 		//     pthread_mutex_lock(&mutex_server);
-		//     server_response.result = modify_value(message.key, message.value1, message.value2, message.value3);
+		//     modify_value(message.key, message.value1, message.value2, message.value3);
 		//     pthread_mutex_unlock(&mutex_server);
 		//     break;
 
@@ -67,11 +67,11 @@ void deal_with_message(struct request *mess){
 		//     pthread_mutex_unlock(&mutex_server);
 		//     break;
 
-        //   case 5:
-		//     pthread_mutex_lock(&mutex_server);
-		//     server_response.result = exist(message.key);
-		//     pthread_mutex_unlock(&mutex_server);
-		//     break;
+          case 5:
+		    pthread_mutex_lock(&mutex_server);
+		    exist(message.key);
+		    pthread_mutex_unlock(&mutex_server);
+		    break;
 
 	    // case 6:
 		//     pthread_mutex_lock(&mutex_server);
