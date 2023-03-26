@@ -250,97 +250,60 @@ int modify_value(int key, char *value1, int value2, double value3) {
 
 }
 
-// int delete_key(int key) {
+int delete_key(int key) {
+// create needed structures
+    char buf[BUF_SIZE];
+    struct sockaddr_in client_address = {
+            .sin_family = AF_INET,
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
+    };
+    struct sockaddr_in server_address = {
+            .sin_family = AF_INET,
+            .sin_addr.s_addr = inet_addr("127.0.0.1"),
+            .sin_port = htons(PORT)
+    };
 
-//     // create needed structures
-//     char buf[BUF_SIZE];
-//     struct sockaddr_in client_address = {
-//             .sin_family = AF_INET,
-//             .sin_addr.s_addr = htonl(INADDR_ANY),
-//             .sin_port = htons(0)
-//     };
-//     struct sockaddr_in server_address = {
-//             .sin_family = AF_INET,
-//             .sin_addr.s_addr = inet_addr("127.0.0.1"),
-//             .sin_port = htons(PORT)
-//     };
+    // create socket
+    int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_fd < 0) {
+        perror("error creating socket");
+        return 1;
+    }
 
-//     // create socket
-//     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-//     if (socket_fd < 0) {
-//         perror("error creating socket");
-//         return 1;
-//     }
+    // bind socket to local address
+    int bind_result = bind(socket_fd, (const struct sockaddr *) &client_address, sizeof(client_address));
+    if (bind_result < 0) {
+        perror("error binding socket");
+        return 1;
+    }
 
-//     // bind socket to local address
-//     int bind_result = bind(socket_fd, (const struct sockaddr *) &client_address, sizeof(client_address));
-//     if (bind_result < 0) {
-//         perror("error binding socket");
-//         return 1;
-//     }
+    // connect to server
+    int connect_result = connect(socket_fd, (const struct sockaddr *) &server_address, sizeof(server_address));
+    if (connect_result < 0) {
+        perror("error connecting to server");
+    }
 
-//     // connect to server
-//     int connect_result = connect(socket_fd, (const struct sockaddr *) &server_address, sizeof(server_address));
-//     if (connect_result < 0) {
-//         perror("error connecting to server");
-//     }
+    // create request
+    struct request req;
+    req.operation_id = 4;
+    req.key = key; 
 
-//     mqd_t server_queue; 
-//     mqd_t client_queue; 
-//     struct request req;
-//     struct response res;
-//     struct mq_attr attr; 
+    // copy data to buffer
+    memcpy(buf, &req, sizeof(req));
 
-//     char queue_name[MAXSIZE];
 
-//     attr.mq_maxmsg = 1; 
-//     attr.mq_msgsize = sizeof(res);
-//     sprintf(queue_name, "/Queue-%d", getpid());
+    int bytes_sent = (int) send(socket_fd, buf, sizeof(buf), 0);
+    if (bytes_sent < 0) {
+        perror("error sending data");
+        return 1;
+    }
 
-//     // Verify communication errors (client).
-//     if((client_queue = mq_open(queue_name, O_CREAT|O_RDONLY, 0700, &attr)) == -1){
-// 	    perror("set_value: error with client queue - mq_open");
-// 	    return -1;
-//     }
+    printf("Operation id: %d: sent %d bytes to server\n", req.operation_id, bytes_sent);
 
-//     // Verify communication errors (server).
-//     if((server_queue = mq_open("/SERVER", O_WRONLY)) == -1){
-// 	    perror("set_value: error with server queue - mq_open");
-// 	    mq_close(client_queue);
-// 	    mq_unlink(queue_name);
-	    
-// 	    return -1;
-//     }
+    return 0;
+}
 
-//     // Fill request.
-//     req.operation_id = 4;
-//     strcpy(req.queue_name, queue_name);
-//     req.key = key;
-
-//     if((mq_send(server_queue, (const char *) &req, sizeof(req), 0)) == -1){
-// 	    perror("set_value: error while filling request - mq_send");
-// 	    mq_close(server_queue);
-// 	    mq_close(client_queue);
-// 	    mq_unlink(queue_name);
-	    
-// 	    return -1;
-//     }
-
-//     if((mq_receive(client_queue, (char*) &res, sizeof(res), 0)) == -1){
-// 	    perror("set_value: error while filling request - mq_receive");
-// 	    mq_close(server_queue);
-// 	    mq_close(client_queue);
-// 	    mq_unlink(queue_name);
-
-// 	    return -1;
-//     }
-    
-//     mq_close(server_queue); 
-//     mq_close(client_queue); 
-//     mq_unlink(queue_name);
-
-//     return res.result;
-// }
 
 int exist(int key) {
 // create needed structures
