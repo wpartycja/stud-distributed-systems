@@ -15,8 +15,9 @@
 #include "servicios_help.h"
 
 #define MAX_MSG_SIZE 1024
-#define DIR_NAME "FilesPractice1"
+#define DIR_NAME "FilesPractice2"
 #define FILE_TYPE ".txt"
+#define MAX_SIZE 256
 
 
 int init() {
@@ -34,7 +35,7 @@ int init() {
 		
 		// Close the directory.
 		if((closedir(dir)) == -1){
-			perror("Error while closing the directory.\n");
+			perror("Error init(): while closing the directory.\n");
 			printf("----------------------------------------\n");
 
 			return(-1);
@@ -44,7 +45,7 @@ int init() {
 		// If the directory doesnt exist, we create it. 
 		mkdir(DIR_NAME, 0700);
 	} else {
-		perror("Error while opening the directory.\n");
+		perror("Error init(): while opening the directory.\n");
 		printf("----------------------------------------\n");
 
 		return(-1);
@@ -58,16 +59,14 @@ int init() {
    
 
 int set_value(int key, char *value1, int value2, double value3) {
-	//char name[1000];
 	int status;
 	char line[5000];
 	char temp[1000];
 	int n;
-	int sz;
 
 	// Verify if value1 is the right size.
-	if((sz = check_size_v1(value1)) == -1){
-		perror("Error: size of value1 is bigger than 256 bytes.\n");
+	if(strlen(value1) >= MAX_SIZE){
+		printf("Error set_value(): size of value1 in file %d is bigger than 256 bytes.\n", key);
 		printf("----------------------------------------\n");
 
 		return -1;
@@ -81,7 +80,7 @@ int set_value(int key, char *value1, int value2, double value3) {
 	if((status = open(path, O_RDONLY)) == -1){
 		// Since the file doesnt exist, we proceed to create it.
 		if((status = open(path, O_WRONLY | O_CREAT, 0666)) == -1){
-			perror("Error while creating the tuple.\n");
+			perror("Error while creating the file.\n");
 			printf("----------------------------------------\n");
 
 			return -1;
@@ -105,13 +104,10 @@ int set_value(int key, char *value1, int value2, double value3) {
 
 		printf("Values for key %d: value1 =\"%s\", value2 = %d, value3 = %lf\n", key, value1, value2, value3);
 		printf("Successfully set values for key %d\n", key);
-		printf("\n");
-
 	} else {
 		// Since file already exists, it is considered an error.
-		printf("Error: key value already exists.\n");
+		printf("Error set_value(): key %d value already exists.\n", key);
 		printf("----------------------------------------\n");
-
 		return -1;
 	}
 
@@ -119,7 +115,6 @@ int set_value(int key, char *value1, int value2, double value3) {
 	if(close(status) == -1){
 		perror("Error while closing the file.\n");
 		printf("----------------------------------------\n");
-
 		return -1;
 	}
 
@@ -138,7 +133,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 	// Verify if value1 is the right size.
 	if((sz = check_size_v1(value1)) == -1){
-		perror("Error: size of value1 is bigger than 256 bytes.\n");
+		perror("Error get_value(): size of value1 is bigger than 256 bytes.\n");
 		printf("----------------------------------------\n");
 
 		return -1;
@@ -152,7 +147,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	FILE *f = fopen(path, "r");
 
 	if(f == NULL){
-		perror("Error: element with key value does not exist.\n");
+		printf("Error get_value(): element with key %d value does not exist.\n", key);
 		printf("----------------------------------------\n");
 
 		return -1;
@@ -183,11 +178,11 @@ int get_value(int key, char *value1, int *value2, double *value3){
 		i++;
 	}
 
-	printf("Succesfully got values: %s, %d, %lf\n", value1, *value2, *value3);
+	printf("Succesfully got values: %s, %d, %lf from file %d\n", value1, *value2, *value3, key);
 	
 	// Close the file.
 	if (fclose(f) == EOF) {
-        	perror("Error while closing the file.\n");
+        perror("Error get_value(): while closing the file.\n");
 		printf("----------------------------------------\n");
 
         	return -1;
@@ -199,52 +194,17 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 
 int modify_value(int key, char* value1, int value2, double value3){
-	// initializing variables
-	FILE* fptr;
-	int sz;
-
-	// Verify if value1 is the right size.
-	if((sz = check_size_v1(value1)) == -1){
-		perror("Error: size of value1 is bigger than 256 bytes.\n");
+	
+	if (exist(key) == -1){
+		printf("Error modify_value(): File can't be opened - file with key %d doesn't exist\n", key);
 		printf("----------------------------------------\n");
-
 		return -1;
 	}
-
-	// getting the key as string and a path
-	const char* key_str = get_key_str(key);
-	const char* path = get_path(key_str);
- 
-	// chainging the type to string
-	char value2_str[(int)((ceil(log10(value2))+1)*sizeof(char))];
-	char value3_str[(int)((ceil(log10(value3))+1)*sizeof(char))];
-
-	sprintf(value2_str, "%d", value2);
-	sprintf(value3_str, "%f", value3);
-
-	// creating new file content
-	int size = strlen(key_str) + strlen(value1) + strlen(value2_str) + strlen(value3_str) + 6; // "6" for separating commas and spaces
-	char new_line[size];
-	snprintf(new_line, sizeof(new_line), "%s, %s, %s, %s", key_str, value1, value2_str, value3_str);
-
-	//saving to file
-	fptr = fopen(path, "r+");
-	 
-    if (NULL == fptr) {
-        printf("Error: File can't be opened - file with this key doesn't exist\n");
-	  printf("----------------------------------------\n");
-
+	
+	if (set_value(key, value1, value2, value3) == -1){
+		printf("Error modify_value(): while changing the values in file %d.\n", key);
 		return -1;
-    } else {
-	    	printf("Modifying file with key: %s\n", key_str);
-		printf("File path: %s\n", path);
-		printf("New tuple to be saved: %s\n", new_line);
-		printf("New values: %s\nHave beed succesfully modified to %s%s file.\n", new_line, key_str, FILE_TYPE);
 	}
-
-	fprintf(fptr, "%s", new_line);
-      fclose(fptr);
-
 	printf("----------------------------------------\n");
 	return 0;
 }
@@ -259,7 +219,7 @@ int delete_key(int key){
 	if(remove(path) == 0) {
 		printf("File %s%s deleted successfully!\n", key_str, FILE_TYPE);
 	} else {
-		printf("Error: Unable to delete file %s%s\n", key_str, FILE_TYPE);
+		printf("Error delete_key(): Unable to delete file %s%s\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
 
 		return -1;
@@ -278,12 +238,12 @@ int exist(int key){
 	if (access(path, F_OK) == 0) { // F_OK - test for the existence of the file
 		printf("Succesfully checked the existence of %s%s file.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 1; // file exist
+		return 0; // file exist
 	
 	} else {
 		printf("File named %s%s doesn't exist.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 0; // file doesn't exist
+		return -1; // file doesn't exist
 	}
 }
 
@@ -296,22 +256,22 @@ int copy_key(int key1, int key2){
 	const char* path1 = get_path(key1_str);
 
 	// opening the files
-    	FILE* fptr1 = fopen(path1, "r");
+    FILE* fptr1 = fopen(path1, "r");
 
 	// If file with key1 doesnt exist, information isnt copied.
 	if (fptr1 == NULL){
-        perror("Error: File with key number 1 doesn't exist.\n");
+        perror("Error copy_key(): File with key number 1 doesn't exist.\n");
         return -1;
     	}
 
 	// Retrieve values from file with key1.
 	char val1[256];
-    	int *val2 = malloc(sizeof(int));  
-    	double *val3 = malloc(sizeof(double)); 
+    int *val2 = malloc(sizeof(int));  
+    double *val3 = malloc(sizeof(double)); 
 	
 	int res1 = get_value(key1, val1, val2, val3);
 	if(res1 == -1){
-		perror("Error while retrieving values from file with key number one.\n");
+		perror("Error copy_key(): while retrieving values from file with key number one.\n");
 		return -1;
 	}
 
@@ -321,20 +281,20 @@ int copy_key(int key1, int key2){
 		// If it exists, we just modify the values.
 		int res3 = modify_value(key2, val1, *val2, *val3);
 		if(res3 == -1){
-			perror("Error while copying the values.\n");
+			perror("Error copy_key(): while copying the values.\n");
 			return -1;
 		}
 	} else {
 		// If the file doesnt exist, we create it.
 		int res4 = set_value(key2, val1, *val2, *val3);
 		if(res4 == -1){
-			perror("Error while copying the values.\n");
+			perror("Error copy_key(): while copying the values.\n");
 			return -1;
 		}
 	}
 
 	free(val2);
-    	free(val3);
+    free(val3);
 
   	printf("Key %s has been copied to %s\n", key1_str, key2_str);
 
