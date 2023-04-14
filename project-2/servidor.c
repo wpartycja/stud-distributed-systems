@@ -92,8 +92,12 @@ int main(int argc, char *argv[]) {
     pthread_attr_t thread_attr; // threads attributes
     pthread_t thid; 
     
+    if (argc != 2){
+        printf("Wrong number of arguments, system requires port number!\n");
+        return 1;
+    }
 
-    int port = PORT;
+    int port = atoi(argv[1]);
 
     // create needed structures
     char buf[BUF_SIZE];
