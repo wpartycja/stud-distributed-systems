@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <netdb.h>
+
 
 #include "mensajes.h"
 #include "claves.h"
@@ -17,15 +19,39 @@
 int init(){
     // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr) ;
+    //address.sin_addr.s_addr = *((unsigned long *)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
@@ -76,17 +102,40 @@ int set_value(int key, char *value1, int value2, double value3) {
 		return -1;
 	}
 
-    // create needed structures
+     // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), 
+            .sin_port = htons(0)                  
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  
+            .sin_port = htons(port_as_int) 
     };
 
     // create socket
@@ -108,7 +157,6 @@ int set_value(int key, char *value1, int value2, double value3) {
     if (connect_result < 0) {
         perror("error connecting to server");
     }
-
     // create request
     struct request req;
     req.operation_id = 1;
@@ -135,15 +183,38 @@ int set_value(int key, char *value1, int value2, double value3) {
 int get_value(int key, char *value1, int *value2, double *value3) {
     // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
@@ -196,17 +267,40 @@ int modify_value(int key, char *value1, int value2, double value3) {
             return -1; // If size if bigger.
     }
 
-    // create needed structures
+     // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
@@ -255,16 +349,41 @@ int modify_value(int key, char *value1, int value2, double value3) {
 
 int delete_key(int key) {
 // create needed structures
+    // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
@@ -308,17 +427,40 @@ int delete_key(int key) {
 }
 
 int exist(int key) {
-// create needed structures
+    // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
@@ -362,17 +504,40 @@ int exist(int key) {
 }
 
 int copy_key(int key1, int key2) {
-// create needed structures
+    // create needed structures
     char buf[BUF_SIZE];
+
+    char *ip_as_string   = getenv("IP_TUPLAS");
+    if (NULL == ip_as_string) {
+        perror("Error: No está establecida la variable de entorno IP_TUPLAS.");
+        return -1;
+    }
+
+    struct hostent *host =  gethostbyname(ip_as_string) ;
+    if (NULL == host) {
+        perror("Error");
+        return -1;
+    }
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
+
+    char *port_as_string = getenv("PORT_TUPLAS");
+    if (NULL == port_as_string) {
+        perror("Error: No está establecida la variable de entorno puerto.");
+        return -1;
+    }
+
+    int port_as_int = atoi(port_as_string);
+
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(0)
+            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
+            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
     };
+
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr("127.0.0.1"),
-            .sin_port = htons(PORT)
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
+            .sin_port = htons(port_as_int)  // var de entorno
     };
 
     // create socket
