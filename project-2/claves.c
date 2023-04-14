@@ -12,7 +12,6 @@
 #include "claves.h"
 
 #define BUF_SIZE    276
-#define PORT        2137
 #define MAX_SIZE    256
 
 
@@ -31,8 +30,7 @@ int init(){
         perror("Error");
         return -1;
     }
-    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr) ;
-    //address.sin_addr.s_addr = *((unsigned long *)host->h_addr);
+    char * ip_as_addr = inet_ntoa (*(struct in_addr*)host->h_addr);
 
     char *port_as_string = getenv("PORT_TUPLAS");
     if (NULL == port_as_string) {
@@ -44,14 +42,14 @@ int init(){
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY), 
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr),  
+            .sin_port = htons(port_as_int)  
     };
 
     // create socket
@@ -207,14 +205,14 @@ int get_value(int key, char *value1, int *value2, double *value3) {
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr),
+            .sin_port = htons(port_as_int)
     };
 
     // create socket
@@ -293,14 +291,14 @@ int modify_value(int key, char *value1, int value2, double value3) {
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr),
+            .sin_port = htons(port_as_int)
     };
 
     // create socket
@@ -376,14 +374,14 @@ int delete_key(int key) {
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr),
+            .sin_port = htons(port_as_int)
     };
 
     // create socket
@@ -453,14 +451,14 @@ int exist(int key) {
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr),
+            .sin_port = htons(port_as_int)
     };
 
     // create socket
@@ -530,14 +528,14 @@ int copy_key(int key1, int key2) {
 
     struct sockaddr_in client_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY), // INADDR_ANY (serv)
-            .sin_port = htons(0)                  // <- TODO: 0 es el valor pasado por atoi(argv[1]) (serv)
+            .sin_addr.s_addr = htonl(INADDR_ANY),
+            .sin_port = htons(0)
     };
 
     struct sockaddr_in server_address = {
             .sin_family = AF_INET,
-            .sin_addr.s_addr = inet_addr(ip_as_addr),  // var de entorno
-            .sin_port = htons(port_as_int)  // var de entorno
+            .sin_addr.s_addr = inet_addr(ip_as_addr), 
+            .sin_port = htons(port_as_int) 
     };
 
     // create socket

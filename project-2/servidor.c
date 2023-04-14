@@ -12,7 +12,6 @@
 #include "mensajes.h"
 
 #define BUF_SIZE    276 // 256 + 4 + 4 + 8 + 4
-#define PORT        2137
 #define SLEEP_TIME  4
 
 // mutex & conditions to protect message copy
