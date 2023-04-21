@@ -14,7 +14,7 @@ claves.o: claves.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@ -fPIC
 	$(CC) $(CPPFLAGS) $(CFLAGS) -shared $< -o libclaves.so -fPIC
 
-cliente: cliente.o
+cliente: cliente.o lines.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $^ $(LDLIBS) -o $@ -lclaves -lrt
 
 servidor: servidor.o servicios.o servicios_help.o

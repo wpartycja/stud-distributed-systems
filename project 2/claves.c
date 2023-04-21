@@ -231,14 +231,14 @@ int get_value(int key, char *value1, int *value2, double *value3) {
     }
 
     // Get value1.
-    if (readLine(sd, value1, MAX_SIZE) < 0) {
+    if (readLine(socket_fd, value1, MAX_SIZE) < 0) {
         fprintf(stderr, "Error: Problem while receiving value1.\n");
         close(socket_fd);
         return -1;
     }
 
     // Get value2.
-    if (readLine(sd, buf, MAX_SIZE) < 0) {
+    if (readLine(socket_fd, buf, MAX_SIZE) < 0) {
         fprintf(stderr, "Error: Problem while receiving value2.\n");
         close(socket_fd);
         return -1;
@@ -246,7 +246,7 @@ int get_value(int key, char *value1, int *value2, double *value3) {
     *value2 = atoi(buf);
 
     // Get value3.
-    if (readLine(sd, buf, MAX_LINE) < 0) {
+    if (readLine(socket_fd, buf, MAX_SIZE) < 0) {
         fprintf(stderr, "Error: Problem while receiving value3.\n");
         close(socket_fd);
         return -1;
@@ -332,7 +332,7 @@ int modify_value(int key, char *value1, int value2, double value3) {
 
     // Send value3.
     sprintf(buf, "%f", value3);
-    sendMessage(socket_fd, buf, strlen(buf) + 1)
+    sendMessage(socket_fd, buf, strlen(buf) + 1);
 
     // Response from the server.
     if (readLine(socket_fd, buf, MAX_SIZE) < 0) {
