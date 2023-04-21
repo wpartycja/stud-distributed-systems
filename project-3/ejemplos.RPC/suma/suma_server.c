@@ -11,9 +11,8 @@ suma_1_svc(int a, int b, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
+	*result = a + b;
+	retval = TRUE;
 
 	return retval;
 }
@@ -23,9 +22,8 @@ resta_1_svc(int a, int b, int *result,  struct svc_req *rqstp)
 {
 	bool_t retval;
 
-	/*
-	 * insert server code here
-	 */
+	*result = a - b;
+	retval = TRUE;
 
 	return retval;
 }

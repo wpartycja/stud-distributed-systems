@@ -2,10 +2,11 @@ BIN_FILES  = claves.o cliente servidor
 
 CC = gcc
 
-CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
+# CPPFLAGS = -I$(INSTALL_PATH)/include -Wall
+CFLAGS += -g -I/usr/include/tirpc
 
 LDFLAGS = -L.
-LDLIBS = -lpthread -lm
+LDLIBS = -lnsl -lpthread -ldl -ltirpc -lm
 
 all: $(BIN_FILES)
 .PHONY : all

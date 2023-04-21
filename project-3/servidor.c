@@ -12,7 +12,6 @@
 #include "mensajes.h"
 
 #define BUF_SIZE    276 // 256 + 4 + 4 + 8 + 4
-#define SLEEP_TIME  4
 
 // mutex & conditions to protect message copy
 pthread_mutex_t mutex_message = PTHREAD_MUTEX_INITIALIZER;
@@ -98,46 +97,6 @@ int main(int argc, char *argv[]) {
 
     int port = atoi(argv[1]);
 
-    // create needed structures
-    char buf[BUF_SIZE];
-    struct sockaddr_in server_address = {
-            .sin_family = AF_INET,
-            .sin_addr.s_addr = htonl(INADDR_ANY),
-            .sin_port = htons(port)
-    };
-    struct sockaddr_in client_address;
-    socklen_t client_address_len = sizeof(client_address);
-
-
-    // create socket
-    int socket_fd = socket(
-            AF_INET,
-            SOCK_STREAM,
-            0
-    );
-    if (socket_fd < 0) {
-        perror("error creating socket");
-        return 1;
-    }
-
-    // bind socket to address
-    int bind_result = bind(
-            socket_fd,
-            (const struct sockaddr *) &server_address,
-            sizeof(server_address)
-    );
-    if (bind_result < 0) {
-        perror("error binding socket");
-        return 1;
-    }
-
-    // put socket in listening mode
-    int listen_result = listen(socket_fd, 1);
-    if (listen_result < 0) {
-        perror("error putting socket in listening mode");
-        return 1;
-    }
-
     pthread_mutex_init(&mutex_message, NULL); 
     pthread_cond_init(&cond_message, NULL); 
     pthread_attr_init(&thread_attr);
@@ -145,29 +104,13 @@ int main(int argc, char *argv[]) {
 
     struct request mess;
 
+    // rpc here //
 
     // listen for connections
     while (1) {
-        int conn_fd = accept(socket_fd, (struct sockaddr*) &client_address, &client_address_len);
-        if (conn_fd < 0) {
-            perror("error accepting connection");
-            return 1;
-        }
-        
-        int bytes_received = (int) recv(conn_fd, buf, sizeof(buf), 0);
-        if (bytes_received < 0) {
-            perror("error receiving data");
-            return 1;
-        }
-        if (bytes_received == 0) {
-            break;
-        }
-        printf(
-            "Received %d bytes from %s:\n%.*s\n\n",
-            bytes_received, inet_ntoa(client_address.sin_addr), bytes_received, buf
-        );
 
-        memcpy(&mess, buf, sizeof(buf));
+        // rpc here //
+
 
         if (bytes_received > 0){
             if (pthread_create(&thid, &thread_attr, (void *) deal_with_message, &mess)== 0) {

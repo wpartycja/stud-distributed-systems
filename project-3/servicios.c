@@ -15,7 +15,7 @@
 #include "servicios_help.h"
 
 #define MAX_MSG_SIZE 1024
-#define DIR_NAME "FilesPractice2"
+#define DIR_NAME "FilesPractice3"
 #define FILE_TYPE ".txt"
 #define MAX_SIZE 256
 
@@ -194,17 +194,70 @@ int get_value(int key, char *value1, int *value2, double *value3){
 
 
 int modify_value(int key, char* value1, int value2, double value3){
+	const char* key_str = get_key_str(key);
+	const char* path = get_path(key_str);
 	
-	if (exist(key) == -1){
+	if (access(path, F_OK) != 0){
 		printf("Error modify_value(): File can't be opened - file with key %d doesn't exist\n", key);
 		printf("----------------------------------------\n");
 		return -1;
 	}
 	
-	if (set_value(key, value1, value2, value3) == -1){
-		printf("Error modify_value(): while changing the values in file %d.\n", key);
+	int status;
+	char line[5000];
+	char temp[1000];
+	int n;
+
+	// Verify if value1 is the right size.
+	if(strlen(value1) >= MAX_SIZE){
+		printf("Error modify_value(): size of value1 in file %d is bigger than 256 bytes.\n", key);
+		printf("----------------------------------------\n");
+
 		return -1;
 	}
+
+	// Open the file.
+	if((status = open(path, O_RDONLY)) == -1){
+		// Since the file doesnt exist, we proceed to create it.
+		if((status = open(path, O_WRONLY | O_CREAT, 0666)) == -1){
+			perror("Error while creating the file.\n");
+			printf("----------------------------------------\n");
+
+			return -1;
+		}
+		// Format the key and values to write them into the file.
+		snprintf(line, 5000, "%d, ", key);
+		
+		n = strlen(value1);
+		strncat(line, value1, n);
+		
+		snprintf(temp, 1000, ", %d, ", value2);
+		n = strlen(temp);
+		strncat(line, temp, n);
+		
+		snprintf(temp, 1000, "%lf\n", value3);
+		n = strlen(temp);
+		strncat(line, temp, n);
+
+		// Write the values into the file.
+		write(status, line, strlen(line));
+
+		printf("Values for key %d: value1 =\"%s\", value2 = %d, value3 = %lf\n", key, value1, value2, value3);
+		printf("Successfully set values for key %d\n", key);
+	} else {
+		// Since file already exists, it is considered an error.
+		printf("Error modify_value(): key %d value already exists.\n", key);
+		printf("----------------------------------------\n");
+		return -1;
+	}
+
+	// Close the file.
+	if(close(status) == -1){
+		perror("Error while closing the file.\n");
+		printf("----------------------------------------\n");
+		return -1;
+	}
+
 	printf("----------------------------------------\n");
 	return 0;
 }
