@@ -3,7 +3,7 @@
  * It was generated using rpcgen.
  */
 
-#include "project3.h"
+#include "project_rpc.h"
 
 bool_t
 xdr_response (XDR *xdrs, response *objp)
