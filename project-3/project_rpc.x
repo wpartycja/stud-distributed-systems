@@ -11,7 +11,7 @@ program PROJECT_RPC {
     version PROJECT_VER {
         int INIT() = 0;
         int SET_VALUE(int key, string value1<MAXSIZE>, int value2, double value3) = 1;
-        response GET_VALUE(int key) = 2;
+        struct response GET_VALUE(int key) = 2;
         int MODIFY_VALUE(int key, string value1<MAXSIZE>, int value2, double value3) = 3;
         int DELETE_KEY(int key) = 4;
         int EXIST(int key) = 5;

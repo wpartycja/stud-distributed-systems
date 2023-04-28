@@ -33,7 +33,7 @@ get_value_1_svc(int key, response *result,  struct svc_req *rqstp)
 {
     result->value1 = malloc(256);
 	pthread_mutex_lock(&mutex_server);
-	modify_value(key, result->value1, result->value2, result->value3);
+	get_value(key, result->value1, &result->value2, &result->value3);
 	pthread_mutex_unlock(&mutex_server);
 
 	return TRUE;

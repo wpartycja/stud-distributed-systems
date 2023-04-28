@@ -4,8 +4,8 @@
  * as a guideline for developing your own functions.
  */
 #include <stdio.h>
-#include "project_rpc.h"
 #include "claves.h"
+#include <stdlib.h>
 
 int
 main (int argc, char *argv[])
@@ -21,6 +21,13 @@ main (int argc, char *argv[])
 	set_value(1, "abcd", 2, 3.0);
     set_value(2, "efgh", 4, 5.0);   
     set_value(3, "ijkl", 6, 7.0);
+
+	char val1[256];
+    int val2;
+    double val3;
+
+    // Getting values of tuples - error: key doesnt exist.
+    get_value(1, val1, &val2, &val3);
 
 	modify_value(2, "qrst", 12, 13.0);
 

@@ -178,7 +178,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
 		i++;
 	}
 
-	printf("Succesfully got values: %s, %d, %lf from file %d\n", value1, *value2, *value3, key);
+	fprintf(stderr, "Succesfully got values: %s, %d, %lf from file %d\n", value1, *value2, *value3, key);
 	
 	// Close the file.
 	if (fclose(f) == EOF) {

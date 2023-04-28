@@ -32,7 +32,7 @@ set_value_1(int key, char *value1, int value2, double value3, int *clnt_res,  CL
 }
 
 enum clnt_stat 
-get_value_1(int key, response *clnt_res,  CLIENT *clnt)
+get_value_1(int key, struct response *clnt_res,  CLIENT *clnt)
 {
 	return (clnt_call(clnt, GET_VALUE,
 		(xdrproc_t) xdr_int, (caddr_t) &key,

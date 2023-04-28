@@ -72,7 +72,7 @@ project_rpc_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	union {
 		int init_1_res;
 		int set_value_1_res;
-		response get_value_1_res;
+		struct response get_value_1_res;
 		int modify_value_1_res;
 		int delete_key_1_res;
 		int exist_1_res;

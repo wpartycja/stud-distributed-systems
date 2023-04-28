@@ -41,8 +41,7 @@ int init(){
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
-    printf("dupa");
-
+    
     clnt_destroy(clnt);
     return result;
 }
@@ -67,6 +66,34 @@ int set_value(int key, char *value1, int value2, double value3){
 
     clnt_destroy(clnt);
     return result;
+}
+
+int get_value(int key, char *value1, int *value2, double *value3){
+    CLIENT *clnt;
+    enum clnt_stat retval;
+
+	struct response result;
+    result.value1 = malloc(256);
+
+
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
+    if (clnt == NULL)
+    {
+        clnt_pcreateerror(host);
+        exit(1);
+    }
+
+	retval = get_value_1(key, &result, clnt);
+	if (retval != RPC_SUCCESS) {
+		clnt_perror (clnt, "call failed");
+	}
+
+    strcpy(value1, result.value1);
+    *value2 = result.value2;
+    *value3 = result.value3;
+
+    clnt_destroy(clnt);
+    return 0;
 }
 
 int modify_value(int key, char *value1, int value2, double value3){

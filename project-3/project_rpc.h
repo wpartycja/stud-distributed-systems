@@ -57,8 +57,8 @@ extern  bool_t init_1_svc(int *, struct svc_req *);
 extern  enum clnt_stat set_value_1(int , char *, int , double , int *, CLIENT *);
 extern  bool_t set_value_1_svc(int , char *, int , double , int *, struct svc_req *);
 #define GET_VALUE 2
-extern  enum clnt_stat get_value_1(int , response *, CLIENT *);
-extern  bool_t get_value_1_svc(int , response *, struct svc_req *);
+extern  enum clnt_stat get_value_1(int , struct response *, CLIENT *);
+extern  bool_t get_value_1_svc(int , struct response *, struct svc_req *);
 #define MODIFY_VALUE 3
 extern  enum clnt_stat modify_value_1(int , char *, int , double , int *, CLIENT *);
 extern  bool_t modify_value_1_svc(int , char *, int , double , int *, struct svc_req *);
