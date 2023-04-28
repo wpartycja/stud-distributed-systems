@@ -22,5 +22,11 @@ main (int argc, char *argv[])
     set_value(2, "efgh", 4, 5.0);   
     set_value(3, "ijkl", 6, 7.0);
 
+	modify_value(2, "qrst", 12, 13.0);
+
+	delete_key(2);
+
+	exist(1);
+
     exit (0);
 }

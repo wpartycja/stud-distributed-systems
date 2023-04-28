@@ -51,10 +51,7 @@ int set_value(int key, char *value1, int value2, double value3){
     CLIENT *clnt;
     enum clnt_stat retval;
 	int result;
-	int set_value_1_key;
-	char *set_value_1_value1;
-	int set_value_1_value2;
-	double set_value_1_value3;
+
 
     clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
@@ -63,7 +60,7 @@ int set_value(int key, char *value1, int value2, double value3){
         exit(1);
     }
 
-	retval = set_value_1(set_value_1_key, set_value_1_value1, set_value_1_value2, set_value_1_value3, &result, clnt);
+	retval = set_value_1(key, value1, value2, value3, &result, clnt);
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (clnt, "call failed");
 	}
@@ -72,3 +69,70 @@ int set_value(int key, char *value1, int value2, double value3){
     return result;
 }
 
+int modify_value(int key, char *value1, int value2, double value3){
+
+    CLIENT *clnt;
+    enum clnt_stat retval;
+	int result;
+
+     clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
+    if (clnt == NULL)
+    {
+        clnt_pcreateerror(host);
+        exit(1);
+    }
+
+	retval = modify_value_1(key, value1, value2, value3, &result, clnt);
+	if (retval != RPC_SUCCESS) {
+		clnt_perror (clnt, "call failed");
+	}
+
+    clnt_destroy(clnt);
+    return result;
+}
+
+int delete_key(int key){
+    CLIENT *clnt;
+    enum clnt_stat retval;
+    int result;
+
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
+    if (clnt == NULL)
+    {
+        clnt_pcreateerror(host);
+        exit(1);
+    }
+
+    retval = delete_key_1(key, &result, clnt);
+    if (retval != RPC_SUCCESS)
+    {
+        clnt_pcreateerror(host);
+    }
+
+    clnt_destroy(clnt);
+    return result;
+
+}
+
+int exist(int key)
+{
+    CLIENT *clnt;
+    enum clnt_stat retval;
+    int result;
+
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
+    if (clnt == NULL)
+    {
+        clnt_pcreateerror(host);
+        exit(1);
+    }
+
+    retval = exist_1(key, &result, clnt);
+    if (retval != RPC_SUCCESS)
+    {
+        clnt_pcreateerror(host);
+    }
+
+    clnt_destroy(clnt);
+    return result;
+}
