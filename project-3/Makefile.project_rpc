@@ -12,9 +12,9 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = project_rpc.x
 
-TARGETS_SVC.c = project_rpc_svc.c project_rpc_server.c project_rpc_xdr.c servicios_help.c servicios_help.h servicios.c servicios.h
-TARGETS_CLNT.c = project_rpc_clnt.c project_rpc_client.c project_rpc_xdr.c claves.c claves.h
-TARGETS = project_rpc.h project_rpc_xdr.c project_rpc_clnt.c project_rpc_svc.c project_rpc_client.c project_rpc_server.c
+TARGETS_SVC.c = project_rpc_svc.c server.c project_rpc_xdr.c servicios_help.c servicios_help.h servicios.c servicios.h
+TARGETS_CLNT.c = project_rpc_clnt.c client.c project_rpc_xdr.c claves.c claves.h
+TARGETS = project_rpc.h project_rpc_xdr.c project_rpc_clnt.c project_rpc_svc.c client.c server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
 OBJECTS_SVC = $(SOURCES_SVC.c:%.c=%.o) $(TARGETS_SVC.c:%.c=%.o)
