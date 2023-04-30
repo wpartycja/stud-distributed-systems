@@ -20,13 +20,16 @@ int checkenv()
 
 int init(){
     int environment = checkenv();
-    if (environment < 0) return -1;
+    if (environment < 0)
+    {
+        return -1; 
+    }
 
     CLIENT *clnt;
     enum clnt_stat retval;
     int result;
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -34,7 +37,6 @@ int init(){
     }
 
     retval = init_1(&result, clnt);
-    printf("result: %d\n", result);
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (clnt, "Init call failed");
     } else {
@@ -46,15 +48,12 @@ int init(){
 }
 
 int set_value(int key, char *value1, int value2, double value3){
-    int environment = checkenv();
-    if (environment < 0) return -1;
-
     CLIENT *clnt;
     enum clnt_stat retval;
 	int result;
 
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -73,9 +72,6 @@ int set_value(int key, char *value1, int value2, double value3){
 }
 
 int get_value(int key, char *value1, int *value2, double *value3){
-    int environment = checkenv();
-    if (environment < 0) return -1;
-
     CLIENT *clnt;
     enum clnt_stat retval;
 
@@ -83,7 +79,7 @@ int get_value(int key, char *value1, int *value2, double *value3){
     result.value1 = malloc(256);
 
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -93,26 +89,24 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	retval = get_value_1(key, &result, clnt);
 	if (retval != RPC_SUCCESS) {
 		clnt_perror (clnt, "Get_value  call failed");
+        return -1;
     } else {
         printf("Get_value send successfully!\n");
         strcpy(value1, result.value1);
         *value2 = result.value2;
         *value3 = result.value3;
         clnt_destroy(clnt);
+        return 0;
     }
-
-    return result.result;
 }
 
 int modify_value(int key, char *value1, int value2, double value3){
-    int environment = checkenv();
-    if (environment < 0) return -1;
 
     CLIENT *clnt;
     enum clnt_stat retval;
 	int result;
 
-     clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+     clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -131,14 +125,11 @@ int modify_value(int key, char *value1, int value2, double value3){
 }
 
 int delete_key(int key){
-    int environment = checkenv();
-    if (environment < 0) return -1;
-    
     CLIENT *clnt;
     enum clnt_stat retval;
     int result;
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -160,14 +151,11 @@ int delete_key(int key){
 
 int exist(int key)
 {
-    int environment = checkenv();
-    if (environment < 0) return -1;
-
     CLIENT *clnt;
     enum clnt_stat retval;
     int result;
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);
@@ -188,14 +176,11 @@ int exist(int key)
 
 int copy_key(int key1, int key2)
 {
-    int environment = checkenv();
-    if (environment < 0) return -1;
-
     CLIENT *clnt;
     enum clnt_stat retval;
     int result;
 
-    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "tcp");
+    clnt = clnt_create(host, PROJECT_RPC, PROJECT_VER, "udp");
     if (clnt == NULL)
     {
         clnt_pcreateerror(host);

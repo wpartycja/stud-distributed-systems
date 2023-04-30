@@ -12,8 +12,8 @@ SOURCES_SVC.c =
 SOURCES_SVC.h = 
 SOURCES.x = project_rpc.x
 
-TARGETS_SVC.c = project_rpc_svc.c server.c project_rpc_xdr.c servicios_help.c servicios.c 
-TARGETS_CLNT.c = project_rpc_clnt.c client.c project_rpc_xdr.c claves.c 
+TARGETS_SVC.c = project_rpc_svc.c server.c project_rpc_xdr.c servicios_help.c servicios_help.h servicios.c servicios.h
+TARGETS_CLNT.c = project_rpc_clnt.c client.c project_rpc_xdr.c claves.c claves.h
 TARGETS = project_rpc.h project_rpc_xdr.c project_rpc_clnt.c project_rpc_svc.c client.c server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)
@@ -41,7 +41,6 @@ $(CLIENT) : $(OBJECTS_CLNT)
 
 $(SERVER) : $(OBJECTS_SVC) 
 	$(LINK.c) -o $(SERVER) $(OBJECTS_SVC) $(LDLIBS)
-
 
  clean:
 	 $(RM) core $(TARGETS) $(OBJECTS_CLNT) $(OBJECTS_SVC) $(CLIENT) $(SERVER)

@@ -6,15 +6,14 @@
 #define FILE_TYPE ".txt"
 #define MAX_SIZE 256
 
-// Declaramos el mutex
 pthread_mutex_t mutex_server = PTHREAD_MUTEX_INITIALIZER;
-
+ 
 bool_t
 init_1_svc(int *result, struct svc_req *rqstp)
 {
 	pthread_mutex_lock(&mutex_server);
-	*result = init();
-	pthread_mutex_unlock(&mutex_server);
+	init();
+	pthread_mutex_unlock(&mutex_server); 
 
 	return TRUE;
 }
@@ -23,8 +22,8 @@ bool_t
 set_value_1_svc(int key, char *value1, int value2, double value3, int *result,  struct svc_req *rqstp)
 {
 	pthread_mutex_lock(&mutex_server);
-	*result = set_value(key, value1, value2, value3);
-	pthread_mutex_unlock(&mutex_server);
+	set_value(key, value1, value2, value3);
+	pthread_mutex_unlock(&mutex_server); 
 
 	return TRUE;
 }
@@ -32,9 +31,9 @@ set_value_1_svc(int key, char *value1, int value2, double value3, int *result,  
 bool_t
 get_value_1_svc(int key, response *result,  struct svc_req *rqstp)
 {
-	pthread_mutex_lock(&mutex_server);
     result->value1 = malloc(256);
-	result->result = get_value(key, result->value1, &result->value2, &result->value3);
+	pthread_mutex_lock(&mutex_server);
+	get_value(key, result->value1, &result->value2, &result->value3);
 	pthread_mutex_unlock(&mutex_server);
 
 	return TRUE;
@@ -43,8 +42,9 @@ get_value_1_svc(int key, response *result,  struct svc_req *rqstp)
 bool_t
 modify_value_1_svc(int key, char *value1, int value2, double value3, int *result,  struct svc_req *rqstp)
 {
+
 	pthread_mutex_lock(&mutex_server);
-	*result = modify_value(key, value1, value2, value3);
+	modify_value(key, value1, value2, value3);
 	pthread_mutex_unlock(&mutex_server);
 
 	return TRUE;
@@ -54,9 +54,8 @@ bool_t
 delete_key_1_svc(int key, int *result,  struct svc_req *rqstp)
 {
 	pthread_mutex_lock(&mutex_server);
-	*result = delete_key(key);
+	delete_key(key);
 	pthread_mutex_unlock(&mutex_server);
-	
 	
 	return TRUE;
 }
@@ -64,10 +63,10 @@ delete_key_1_svc(int key, int *result,  struct svc_req *rqstp)
 bool_t
 exist_1_svc(int key, int *result,  struct svc_req *rqstp)
 {
+
 	pthread_mutex_lock(&mutex_server);
-	*result = exist(key);
+	exist(key);
 	pthread_mutex_unlock(&mutex_server);
-	
 
 	return TRUE;
 }
@@ -76,9 +75,8 @@ bool_t
 copy_key_1_svc(int key1, int key2, int *result,  struct svc_req *rqstp)
 {
 	pthread_mutex_lock(&mutex_server);
-	*result = copy_key(key1, key2);
+	copy_key(key1, key2);
 	pthread_mutex_unlock(&mutex_server);
-	
 	
 	return TRUE;
 }
@@ -91,7 +89,6 @@ project_rpc_1_freeresult (SVCXPRT *transp, xdrproc_t xdr_result, caddr_t result)
 	/*
 	 * Insert additional freeing code here, if needed
 	 */
-	pthread_mutex_destroy(&mutex_server);
 
 	return 1;
 }

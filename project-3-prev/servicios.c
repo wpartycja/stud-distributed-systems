@@ -86,12 +86,12 @@ int set_value(int key, char *value1, int value2, double value3) {
 			return -1;
 		}
 		// Format the key and values to write them into the file.
-		snprintf(line, 5000, "%d,", key);
+		snprintf(line, 5000, "%d, ", key);
 		
 		n = strlen(value1);
 		strncat(line, value1, n);
 		
-		snprintf(temp, 1000, ",%d,", value2);
+		snprintf(temp, 1000, ", %d, ", value2);
 		n = strlen(temp);
 		strncat(line, temp, n);
 		
@@ -156,17 +156,12 @@ int get_value(int key, char *value1, int *value2, double *value3){
 	// Get values and store them.
 	fgets(line, MAX_MSG_SIZE, f);	
 
-	// Split the line using the character ","
-	token = strtok(line, ",");
-	printf("Token: %s\n", token);
-
-
+	// Extract the first token
+	token = strtok(line, ", ");
 
 	// Loop through the string to extract all other tokens.
 	while((token != NULL) && i < 3){
-		// Get the next token, including the spaces between words.
-		token = strtok(NULL, ",");
-		
+		token = strtok(NULL, ", ");
 		switch(i){
 			case 0:
 				strcpy(value1, token);
@@ -201,15 +196,9 @@ int get_value(int key, char *value1, int *value2, double *value3){
 int modify_value(int key, char* value1, int value2, double value3){
 	const char* key_str = get_key_str(key);
 	const char* path = get_path(key_str);
-
-	if (exist(key) == 0 || exist(key) == -1){
-		printf("Error modify_value(): File can't be modified - file with key %d doesn't exist\n", key);
-		printf("----------------------------------------\n");
-		return -1;
-	}
-
-	if (delete_key(key) == -1){
-		printf("Error modify_value(): File can't be modified - file with key %d can't be deleted\n", key);
+	
+	if (access(path, F_OK) != 0){
+		printf("Error modify_value(): File can't be opened - file with key %d doesn't exist\n", key);
 		printf("----------------------------------------\n");
 		return -1;
 	}
@@ -237,12 +226,12 @@ int modify_value(int key, char* value1, int value2, double value3){
 			return -1;
 		}
 		// Format the key and values to write them into the file.
-		snprintf(line, 5000, "%d,", key);
+		snprintf(line, 5000, "%d, ", key);
 		
 		n = strlen(value1);
 		strncat(line, value1, n);
 		
-		snprintf(temp, 1000, ",%d,", value2);
+		snprintf(temp, 1000, ", %d, ", value2);
 		n = strlen(temp);
 		strncat(line, temp, n);
 		
@@ -302,12 +291,12 @@ int exist(int key){
 	if (access(path, F_OK) == 0) { // F_OK - test for the existence of the file
 		printf("Succesfully checked the existence of %s%s file.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 1; // file exist
+		return 0; // file exist
 	
 	} else {
 		printf("File named %s%s doesn't exist.\n", key_str, FILE_TYPE);
 		printf("----------------------------------------\n");
-		return 0; // file doesn't exist
+		return -1; // file doesn't exist
 	}
 }
 
