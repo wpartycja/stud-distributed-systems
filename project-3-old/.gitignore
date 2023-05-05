@@ -1,7 +1,0 @@
-*.o
-/cliente
-/servidor
-*.txt
-/FilesPractice3
-*.out
-libclaves.so
